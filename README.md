@@ -49,3 +49,6 @@ Kredensial admin hasil seed: `admin@synclab.id` / `SandiAman123!`.
 5. Tabel `pengalihan` (redirect URL untuk SEO).
 6. `metadata_seo` polimorfik (`tipe_konten` + `id_konten`) menggantikan FK langsung.
 7. Status konten lanjutan: `scheduled` + `trash` (soft delete) sesuai PRD.
+## Deployment (VPS)
+
+Production: http://43.156.102.177 - auto-deploy via GitHub webhook (push ke main -> VPS menjalankan git pull, build frontend, restart PM2).
