@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { api } from '../services/api.js';
 import AppLayout from '../components/layout/AppLayout.jsx';
 import SectionHeader from '../components/beranda/SectionHeader.jsx';
@@ -8,21 +9,32 @@ export default function ArtikelListPage() {
   const [artikel, setArtikel] = useState([]);
   const [meta, setMeta] = useState(null);
   const [halaman, setHalaman] = useState(1);
+  const [params] = useSearchParams();
+  const urutkan = params.get('urutkan') === 'populer' ? 'populer' : null;
 
   useEffect(() => {
+    setHalaman(1);
+  }, [urutkan]);
+
+  useEffect(() => {
+    const q = new URLSearchParams({ halaman, limit: 9 });
+    if (urutkan) q.set('urutkan', urutkan);
     api
-      .get(`/artikel?halaman=${halaman}&limit=9`)
+      .get(`/artikel?${q}`)
       .then((r) => {
         setArtikel(r.data || []);
         setMeta(r.meta);
       })
       .catch(() => {});
-  }, [halaman]);
+  }, [halaman, urutkan]);
 
   return (
     <AppLayout>
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-12">
-        <SectionHeader judul="Semua Artikel" subjudul="Katalog Konten" />
+        <SectionHeader
+          judul={urutkan ? 'Artikel Terpopuler' : 'Semua Artikel'}
+          subjudul={urutkan ? 'Paling Banyak Dibaca' : 'Katalog Konten'}
+        />
         {artikel.length === 0 ? (
           <p className="py-16 text-center text-slate-500">Belum ada artikel terbit.</p>
         ) : (

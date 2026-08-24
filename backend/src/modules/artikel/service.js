@@ -5,6 +5,7 @@ const SELECT_PUBLIK = `
   SELECT a.id, a.judul, a.slug, a.kutipan, a.diterbitkan_pada,
          m.url AS gambar_unggulan,
          p.nama_lengkap AS penulis_nama, p.foto_profil AS penulis_foto,
+         (SELECT COUNT(*) FROM kunjungan_artikel ka WHERE ka.id_artikel = a.id)::int AS jumlah_dilihat,
          COALESCE((
            SELECT jsonb_agg(jsonb_build_object('nama', k.nama, 'slug', k.slug, 'warna', k.warna))
            FROM artikel_kategori ak
@@ -24,6 +25,7 @@ function bentukArtikelPublik(baris) {
     kutipan: baris.kutipan,
     diterbitkan_pada: baris.diterbitkan_pada,
     gambar_unggulan: baris.gambar_unggulan,
+    jumlah_dilihat: baris.jumlah_dilihat,
     penulis: {
       nama_lengkap: baris.penulis_nama,
       foto_profil: baris.penulis_foto,
@@ -32,7 +34,7 @@ function bentukArtikelPublik(baris) {
   };
 }
 
-export async function daftarPublik({ kategori, halaman = 1, limit = 10 }) {
+export async function daftarPublik({ kategori, halaman = 1, limit = 10, urutkan }) {
   const offset = (halaman - 1) * limit;
   const params = [];
   let klausa = "WHERE a.status = 'terbit'";
@@ -50,9 +52,14 @@ export async function daftarPublik({ kategori, halaman = 1, limit = 10 }) {
   );
   const total = totalRows[0].total;
   params.push(limit, offset);
+  // populer = total kunjungan terbanyak; bawaan = artikel terbit terbaru
+  const urutan =
+    urutkan === 'populer'
+      ? 'ORDER BY jumlah_dilihat DESC, a.diterbitkan_pada DESC, a.id'
+      : 'ORDER BY a.diterbitkan_pada DESC, a.id';
   const { rows } = await kueri(
     `${SELECT_PUBLIK} ${klausa}
-     ORDER BY a.diterbitkan_pada DESC
+     ${urutan}
      LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params
   );

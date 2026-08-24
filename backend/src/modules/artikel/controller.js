@@ -7,10 +7,10 @@ function angkaHal(nilai, bawaan) {
 }
 
 export async function daftarPublik(req, res) {
-  const { kategori } = req.query;
+  const { kategori, urutkan } = req.query;
   const halaman = angkaHal(req.query.halaman, 1);
   const limit = Math.min(angkaHal(req.query.limit, 10), 50);
-  const { data, meta } = await service.daftarPublik({ kategori, halaman, limit });
+  const { data, meta } = await service.daftarPublik({ kategori, halaman, limit, urutkan });
   return berhasil(res, 'Daftar artikel berhasil diambil', data, 200, meta);
 }
 

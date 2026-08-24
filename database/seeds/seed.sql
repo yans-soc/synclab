@@ -176,7 +176,22 @@ VALUES
   TRUE
 );
 
--- 8. SEED MENU NAVIGASI
+-- 8. SEED KUNJUNGAN AWAL (data awal agar trending tidak kosong;
+--    selanjutnya data diisi realtime oleh sistem saat pengunjung membaca)
+INSERT INTO kunjungan_artikel (id_artikel, dikunjungi_pada)
+SELECT d.id, now() - (random() * INTERVAL '7 days')
+FROM (
+  VALUES
+    ('d6eebc99-9c0b-4ef8-bb6d-6bb9bd380a06'::uuid, 42),
+    ('d4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04'::uuid, 35),
+    ('d1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'::uuid, 28),
+    ('d5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05'::uuid, 19),
+    ('d2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02'::uuid, 12),
+    ('d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03'::uuid, 7)
+) AS d(id, jumlah)
+CROSS JOIN generate_series(1, d.jumlah);
+
+-- 9. SEED MENU NAVIGASI
 INSERT INTO menu (id, nama, lokasi)
 VALUES 
 ('71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Header Navigation', 'header'),

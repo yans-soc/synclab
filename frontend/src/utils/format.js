@@ -12,3 +12,10 @@ export function formatTanggal(iso) {
     year: 'numeric',
   }).format(new Date(iso));
 }
+
+export function formatAngka(n) {
+  const nilai = Number(n) || 0;
+  if (nilai >= 1000000) return `${(nilai / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt`;
+  if (nilai >= 1000) return `${(nilai / 1000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} rb`;
+  return nilai.toLocaleString('id-ID');
+}

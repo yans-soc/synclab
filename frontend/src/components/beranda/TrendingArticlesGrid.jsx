@@ -22,7 +22,7 @@ export default function TrendingArticlesGrid({ pengaturan }) {
         <SectionHeader
           subjudul={pengaturan.subjudul}
           judul={pengaturan.judul_seksi}
-          tautan="/artikel"
+          tautan="/artikel?urutkan=populer"
           teksTautan={pengaturan.teks_tautan}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
