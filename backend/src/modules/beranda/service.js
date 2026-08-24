@@ -26,13 +26,16 @@ export async function berandaAktif({ lengkap = false } = {}) {
 
   // Mode komposit: data seluruh seksi dalam SATU respons agar homepage tidak
   // membuat waterfall 4 request (struktur + kategori + terbaru + trending).
+  const cariBagian = (tipe) => beranda.bagian.find((b) => b.tipe === tipe);
   const kebutuhan = new Set(beranda.bagian.map((b) => b.tipe));
+  const jumlahTerbaru = cariBagian('latest_articles')?.pengaturan?.jumlah_tampil || 6;
+  const jumlahTrending = cariBagian('trending_articles')?.pengaturan?.jumlah_tampil || 6;
   const [kategori, terbaru, trending] = await Promise.all([
     kebutuhan.has('explore_topics') ? daftarKategori() : Promise.resolve(null),
     kebutuhan.has('latest_articles')
-      ? daftarPublik({ limit: 6 }).then((r) => r.data)
+      ? daftarPublik({ limit: jumlahTerbaru }).then((r) => r.data)
       : Promise.resolve(null),
-    kebutuhan.has('trending_articles') ? daftarTrending(6) : Promise.resolve(null),
+    kebutuhan.has('trending_articles') ? daftarTrending(jumlahTrending) : Promise.resolve(null),
   ]);
   beranda.data = { kategori, artikel_terbaru: terbaru, trending };
   return beranda;
