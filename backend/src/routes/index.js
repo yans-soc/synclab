@@ -7,19 +7,21 @@ import { routerPublik as menuPublik, routerAdmin as menuAdmin } from '../modules
 import { routerPublik as pengaturanPublik, routerAdmin as pengaturanAdmin } from '../modules/pengaturan/routes.js';
 import { routerPublik as halamanPublik, routerAdmin as halamanAdmin } from '../modules/halaman/routes.js';
 import mediaAdmin from '../modules/media/routes.js';
+import { cachePublik, invalidasiCache } from '../middleware/cache.js';
 
 const router = Router();
 
-// Public API
-router.use('/otentikasi', routerOtentikasi);
-router.use('/beranda', berandaPublik);
-router.use('/artikel', artikelPublik);
-router.use('/kategori', kategoriPublik);
-router.use('/menu', menuPublik);
-router.use('/pengaturan', pengaturanPublik);
-router.use('/halaman', halamanPublik);
+// Public API (di-cache in-memory, invalidasi otomatis saat mutasi admin)
+router.use('/beranda', cachePublik, berandaPublik);
+router.use('/artikel', cachePublik, artikelPublik);
+router.use('/kategori', cachePublik, kategoriPublik);
+router.use('/menu', cachePublik, menuPublik);
+router.use('/pengaturan', cachePublik, pengaturanPublik);
+router.use('/halaman', cachePublik, halamanPublik);
 
-// Admin API
+// Admin API (setiap mutasi membersihkan cache publik)
+router.use('/otentikasi', routerOtentikasi);
+router.use('/admin', invalidasiCache);
 router.use('/admin/artikel', artikelAdmin);
 router.use('/admin/kategori', kategoriAdmin);
 router.use('/admin/beranda', berandaAdmin);

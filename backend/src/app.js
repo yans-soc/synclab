@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
+import compression from 'compression';
 import fs from 'node:fs';
 import { config } from './config.js';
 import router from './routes/index.js';
@@ -10,9 +11,11 @@ fs.mkdirSync(config.uploadDir, { recursive: true });
 
 const app = express();
 
+app.set('etag', 'strong');
+app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
-app.use('/uploads', express.static(config.uploadDir));
+app.use('/uploads', express.static(config.uploadDir, { maxAge: '7d', immutable: true }));
 
 app.get('/api/kesehatan', (req, res) => {
   res.json({ sukses: true, pesan: 'Server SYNCLAB CMS berjalan', data: null });
