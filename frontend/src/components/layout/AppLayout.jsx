@@ -1,5 +1,6 @@
 import TopNavBar from './TopNavBar.jsx';
 import Footer from './Footer.jsx';
+import TombolKeAtas from './TombolKeAtas.jsx';
 
 export default function AppLayout({ children }) {
   return (
@@ -7,6 +8,7 @@ export default function AppLayout({ children }) {
       <TopNavBar />
       <main className="flex-1">{children}</main>
       <Footer />
+      <TombolKeAtas />
     </div>
   );
 }
