@@ -9,7 +9,7 @@ Dokumen ini berisi aturan baku (*System Prompt / Coding Guidelines*) yang wajib 
 1. **Penggunaan Bahasa Indonesia**:
    - Seluruh nama tabel, nama kolom, *foreign key*, dan *junction table* di PostgreSQL **WAJIB** menggunakan **Bahasa Indonesia** dengan format `snake_case`.
    - **DILARANG HARAM** memuat istilah Bahasa Inggris pada nama tabel/kolom database (contoh keliru: `users`, `posts`, `created_at`; contoh benar: `pengguna`, `artikel`, `dibuat_pada`).
-   - Rujukan skema utama wajib mengikuti berkas `desain_database.md`.
+   - Rujukan skema utama wajib mengikuti berkas `database.md`.
 
 2. **Tipe Data & Identifier**:
    - Seluruh *Primary Key* menggunakan tipe `UUID` (`id`).

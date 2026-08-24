@@ -1,17 +1,8 @@
-# Data Awal & Seed Database (seed.md) - SYNCLAB CMS
-
-Dokumen ini berisi skrip SQL seeding (`seed.sql`) untuk mengisi database PostgreSQL dengan data awal yang dibutuhkan oleh Landing Page SYNCLAB. Semua tabel dan kolom **menggunakan penamaan Bahasa Indonesia**.
-
----
-
-## 1. Skrip SQL Data Awal (seed.sql)
-
-```sql
 -- 1. SEED PENGGUNA (Admin Master & Penulis)
 INSERT INTO pengguna (id, nama_lengkap, surel, kata_sandi, peran, aktif)
 VALUES 
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Admin SYNCLAB', 'admin@synclab.id', '$2b$10$e832r8234y892348923489u89234892348923489234892348923489', 'admin', TRUE),
-('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Rian Febrian', 'rian@synclab.id', '$2b$10$e832r8234y892348923489u89234892348923489234892348923489', 'penulis', TRUE);
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Admin SYNCLAB', 'admin@synclab.id', '$2a$10$6aB2LOxUFQdA0uGkCUUG0e/umsOIbvy2iFW5.PNA3MjniSpBfpqge', 'admin', TRUE),
+('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Rian Febrian', 'rian@synclab.id', '$2a$10$6aB2LOxUFQdA0uGkCUUG0e/umsOIbvy2iFW5.PNA3MjniSpBfpqge', 'penulis', TRUE);
 
 -- 2. SEED KATEGORI
 INSERT INTO kategori (id, nama, slug, deskripsi, warna, ikon)
@@ -149,4 +140,3 @@ VALUES
 ('judul_situs', 'SYNCLAB', 'Nama utama platform / website', 'string'),
 ('deskripsi_situs', 'High-Quality Programming & System Engineering Tutorials', 'Slogan dan deskripsi default platform', 'string'),
 ('surel_kontak', 'contact@synclab.id', 'Alamat surel kontak resmi', 'string');
-```

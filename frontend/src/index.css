@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@layer base {
+  body {
+    @apply bg-surface-container-lowest text-slate-800 antialiased dark:bg-slate-950 dark:text-slate-200;
+  }
+}
+
+@layer components {
+  .prose-konten h2 {
+    @apply mt-8 mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100;
+  }
+  .prose-konten h3 {
+    @apply mt-6 mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100;
+  }
+  .prose-konten p {
+    @apply mb-4 leading-relaxed;
+  }
+  .prose-konten ul {
+    @apply mb-4 list-disc pl-6;
+  }
+  .prose-konten ol {
+    @apply mb-4 list-decimal pl-6;
+  }
+  .prose-konten code {
+    @apply rounded bg-surface-container-high px-1 py-0.5 text-sm dark:bg-slate-800;
+  }
+  .prose-konten pre {
+    @apply mb-4 overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm text-slate-100;
+  }
+}
