@@ -60,6 +60,45 @@ Jaringan mesh menawarkan...',
   'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
   '93eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   CURRENT_TIMESTAMP - INTERVAL '7 days'
+),
+(
+  'd4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04',
+  'Getting Started with Docker & Containerization',
+  'getting-started-with-docker-containerization',
+  'Panduan praktis membangun, menjalankan, dan mengorkestrasi container Docker untuk lingkungan pengembangan dan produksi.',
+  '## Mengapa Container?
+
+Container mengemas aplikasi beserta dependensinya...',
+  'terbit',
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+  '91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
+  CURRENT_TIMESTAMP - INTERVAL '3 days'
+),
+(
+  'd5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05',
+  'Modern CSS: Grid, Flexbox, dan Container Queries',
+  'modern-css-grid-flexbox-container-queries',
+  'Kuasai teknik layout CSS modern untuk membangun antarmuka yang responsif tanpa media query yang rumit.',
+  '## Evolusi Layout CSS
+
+CSS Grid dan Flexbox mengubah cara kita...',
+  'terbit',
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+  '92eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
+  CURRENT_TIMESTAMP - INTERVAL '4 days'
+),
+(
+  'd6eebc99-9c0b-4ef8-bb6d-6bb9bd380a06',
+  'Pengantar Machine Learning untuk Developer',
+  'pengantar-machine-learning-untuk-developer',
+  'Konsep fundamental machine learning, dari regresi hingga neural network, dengan contoh kode Python yang langsung bisa dijalankan.',
+  '## Apa itu Machine Learning?
+
+Machine learning memungkinkan komputer...',
+  'terbit',
+  'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
+  '93eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
+  CURRENT_TIMESTAMP - INTERVAL '6 days'
 );
 
 -- 5. RELASI ARTIKEL DAN KATEGORI
@@ -67,7 +106,10 @@ INSERT INTO artikel_kategori (id_artikel, id_kategori)
 VALUES 
 ('d1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'),
 ('d2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02'),
-('d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'c3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03');
+('d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'c3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03'),
+('d4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'),
+('d5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'),
+('d6eebc99-9c0b-4ef8-bb6d-6bb9bd380a06', 'c4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04');
 
 -- 6. SEED BERANDA MASTER
 INSERT INTO beranda (id, judul, versi, aktif)
