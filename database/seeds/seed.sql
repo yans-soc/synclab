@@ -211,3 +211,13 @@ VALUES
 ('judul_situs', 'SYNCLAB', 'Nama utama platform / website', 'string'),
 ('deskripsi_situs', 'High-Quality Programming & System Engineering Tutorials', 'Slogan dan deskripsi default platform', 'string'),
 ('surel_kontak', 'contact@synclab.id', 'Alamat surel kontak resmi', 'string');
+
+-- 9. SINKRONISASI COUNTER OTORITATIF dari data kunjungan awal di atas
+UPDATE artikel a SET jumlah_dilihat = sub.total
+FROM (
+  SELECT id_artikel, COUNT(*)::int AS total
+  FROM kunjungan_artikel
+  WHERE sah = TRUE
+  GROUP BY id_artikel
+) sub
+WHERE a.id = sub.id_artikel;

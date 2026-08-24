@@ -7,6 +7,7 @@ import { routerPublik as menuPublik, routerAdmin as menuAdmin } from '../modules
 import { routerPublik as pengaturanPublik, routerAdmin as pengaturanAdmin } from '../modules/pengaturan/routes.js';
 import { routerPublik as halamanPublik, routerAdmin as halamanAdmin } from '../modules/halaman/routes.js';
 import mediaAdmin from '../modules/media/routes.js';
+import kunjunganRoutes from '../modules/kunjungan/routes.js';
 import { cachePublik, invalidasiCache } from '../middleware/cache.js';
 
 const router = Router();
@@ -18,6 +19,9 @@ router.use('/kategori', cachePublik, kategoriPublik);
 router.use('/menu', cachePublik, menuPublik);
 router.use('/pengaturan', cachePublik, pengaturanPublik);
 router.use('/halaman', cachePublik, halamanPublik);
+
+// Klaim view tervalidasi (tidak di-cache; ini mutasi terukur)
+router.use('/kunjungan', kunjunganRoutes);
 
 // Admin API (setiap mutasi membersihkan cache publik)
 router.use('/otentikasi', routerOtentikasi);

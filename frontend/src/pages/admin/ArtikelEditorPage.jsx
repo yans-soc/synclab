@@ -4,6 +4,7 @@ import { api } from '../../services/api.js';
 import SeoPanel from '../../components/seo-panel/SeoPanel.jsx';
 import SlugEditor from '../../components/slug-editor/SlugEditor.jsx';
 import MediaManagerModal from '../../components/media-picker/MediaManagerModal.jsx';
+import PanelStatistikArtikel from '../../components/statistik/PanelStatistikArtikel.jsx';
 
 const KOSONG = {
   judul: '',
@@ -112,6 +113,8 @@ export default function ArtikelEditorPage() {
           {error}
         </p>
       )}
+
+      {id && <div className="mb-6"><PanelStatistikArtikel idArtikel={id} /></div>}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-2">

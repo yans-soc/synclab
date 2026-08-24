@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { hitungWaktuBaca, formatTanggal, formatAngka } from '../../utils/format.js';
+import { hitungWaktuBaca, formatTanggal } from '../../utils/format.js';
+import PostViewCount from './PostViewCount.jsx';
 
 const badgeWarna = {
   primary: 'bg-primary/10 text-primary',
@@ -44,10 +45,7 @@ export function ArticleCard({ judul, slug, kutipan, diterbitkan_pada, gambar_ung
             {waktuBaca} menit baca
           </span>
           {jumlah_dilihat !== undefined && (
-            <span className="flex items-center gap-1 text-xs text-slate-400">
-              <span className="material-symbols-outlined text-sm">visibility</span>
-              {formatAngka(jumlah_dilihat)}
-            </span>
+            <PostViewCount jumlah={jumlah_dilihat} className="text-xs text-slate-400" />
           )}
         </div>
         <h3 className="font-headline text-lg font-bold leading-snug text-slate-900 transition group-hover:text-primary dark:text-white">

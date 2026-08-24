@@ -15,7 +15,9 @@ export async function daftarPublik(req, res) {
 }
 
 export async function detailPublik(req, res) {
-  const data = await service.detailPublikBySlug(req.params.slug);
+  const data = await service.detailPublikBySlug(req.params.slug, {
+    agenPengguna: String(req.headers['user-agent'] || ''),
+  });
   if (!data) return gagal(res, 'Artikel tidak ditemukan', 404);
   return berhasil(res, 'Detail artikel berhasil ditemukan', data);
 }

@@ -83,6 +83,7 @@ export default function ArtikelAdminPage() {
               <th className="px-5 py-3">Judul</th>
               <th className="px-5 py-3">Status</th>
               <th className="hidden px-5 py-3 md:table-cell">Kategori</th>
+              <th className="hidden px-5 py-3 md:table-cell">Views</th>
               <th className="hidden px-5 py-3 md:table-cell">Diperbarui</th>
               <th className="px-5 py-3 text-right">Aksi</th>
             </tr>
@@ -101,6 +102,12 @@ export default function ArtikelAdminPage() {
                 </td>
                 <td className="hidden px-5 py-3 text-slate-500 md:table-cell">
                   {a.kategori.map((k) => k.nama).join(', ') || '-'}
+                </td>
+                <td className="hidden px-5 py-3 md:table-cell">
+                  <span className="flex items-center gap-1 text-slate-500" title={`${a.jumlah_dilihat ?? 0} kali dilihat`}>
+                    <span className="material-symbols-outlined text-sm">visibility</span>
+                    {(a.jumlah_dilihat ?? 0).toLocaleString('id-ID')}
+                  </span>
                 </td>
                 <td className="hidden px-5 py-3 text-slate-500 md:table-cell">
                   {formatTanggal(a.diperbarui_pada)}

@@ -3,18 +3,21 @@ import { Link } from 'react-router-dom';
 import { api } from '../../services/api.js';
 
 export default function DashboardPage() {
-  const [stat, setStat] = useState({ artikel: 0, kategori: 0, media: 0 });
+  const [stat, setStat] = useState({ artikel: 0, kategori: 0, media: 0, views: 0 });
 
   useEffect(() => {
     Promise.allSettled([
-      api.get('/admin/artikel?limit=1'),
+      api.get('/admin/artikel?limit=50'),
       api.get('/kategori'),
       api.get('/admin/media'),
     ]).then(([a, k, m]) => {
+      // Total views dijumlahkan dari counter otoritatif tiap artikel (sumber sama)
+      const daftarArtikel = a.status === 'fulfilled' ? a.value.data ?? [] : [];
       setStat({
         artikel: a.status === 'fulfilled' ? a.value.meta?.total_item ?? 0 : 0,
         kategori: k.status === 'fulfilled' ? k.value.data?.length ?? 0 : 0,
         media: m.status === 'fulfilled' ? m.value.data?.length ?? 0 : 0,
+        views: daftarArtikel.reduce((t, x) => t + (x.jumlah_dilihat ?? 0), 0),
       });
     });
   }, []);
@@ -23,6 +26,7 @@ export default function DashboardPage() {
     { label: 'Total Artikel', nilai: stat.artikel, ikon: 'article', warna: 'text-primary bg-primary/10' },
     { label: 'Kategori', nilai: stat.kategori, ikon: 'category', warna: 'text-secondary bg-secondary/10' },
     { label: 'Media', nilai: stat.media, ikon: 'perm_media', warna: 'text-ai-purple bg-ai-purple/10' },
+    { label: 'Total Views', nilai: stat.views, ikon: 'visibility', warna: 'text-primary bg-primary/10' },
   ];
 
   return (
@@ -30,7 +34,7 @@ export default function DashboardPage() {
       <h1 className="mb-6 font-headline text-2xl font-extrabold text-slate-900 dark:text-white">
         Dashboard
       </h1>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-4">
         {kartu.map((k) => (
           <div
             key={k.label}

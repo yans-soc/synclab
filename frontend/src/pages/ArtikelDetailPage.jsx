@@ -3,12 +3,15 @@ import { Link, useParams } from 'react-router-dom';
 import { marked } from 'marked';
 import { api } from '../services/api.js';
 import AppLayout from '../components/layout/AppLayout.jsx';
-import { hitungWaktuBaca, formatTanggal, formatAngka } from '../utils/format.js';
+import PostViewCount from '../components/beranda/PostViewCount.jsx';
+import { hitungWaktuBaca, formatTanggal } from '../utils/format.js';
+import { usePelacakView } from '../hooks/usePelacakView.js';
 
 export default function ArtikelDetailPage() {
   const { slug } = useParams();
   const [artikel, setArtikel] = useState(null);
   const [status, setStatus] = useState('memuat');
+  const jumlahDilihat = usePelacakView(artikel);
 
   useEffect(() => {
     setStatus('memuat');
@@ -80,10 +83,7 @@ export default function ArtikelDetailPage() {
             <span className="material-symbols-outlined text-base">schedule</span>
             {hitungWaktuBaca(artikel.konten)} menit baca
           </span>
-          <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-base">visibility</span>
-            {formatAngka(artikel.jumlah_dilihat)} kali dilihat
-          </span>
+          <PostViewCount jumlah={jumlahDilihat} ikonClass="text-base" />
         </div>
         {artikel.gambar_unggulan && (
           <img
