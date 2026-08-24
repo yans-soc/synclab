@@ -8,7 +8,7 @@ import { ambilCache, simpanCache, invalidasiKontenPublik } from '../utils/invali
 // - Populer              : publik tapi singkat (urutan mendekati realtime)
 // - Detail artikel       : no-store — respons membawa token kunjungan per-pengunjung
 // - Admin/auth           : private, no-store (diset di middleware adminTanpaCache)
-const TANPA_CACHE = /^\/api\/v1\/artikel\/(?!trending[/?])[^/?]+/;
+const TANPA_CACHE = /^\/api\/v1\/artikel\/(?!trending(?:[/?]|$))[^/?]+/;
 const HEADER_PUBLIK = 'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
 const HEADER_POPULER = 'public, max-age=15, s-maxage=30, stale-while-revalidate=60';
 const HEADER_TRENDING = 'public, max-age=30, s-maxage=60, stale-while-revalidate=120';
