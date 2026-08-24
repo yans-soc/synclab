@@ -61,7 +61,7 @@ export default function ArtikelDetailPage() {
           {artikel.kategori.map((k) => (
             <Link
               key={k.slug}
-              to={`/kategori/${k.slug}`}
+              to={`/category/${k.slug}`}
               className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
             >
               {k.nama}

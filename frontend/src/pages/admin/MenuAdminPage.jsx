@@ -122,7 +122,7 @@ export default function MenuAdminPage() {
             required
             value={form.url}
             onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-            placeholder="/kategori/web-dev"
+            placeholder="/category/web-dev"
             className="mb-3 w-full rounded-lg border border-surface-container-high bg-transparent px-3 py-2 text-sm outline-none focus:border-primary dark:border-slate-700"
           />
           <label className="mb-1 block text-xs font-medium text-slate-500">Posisi</label>

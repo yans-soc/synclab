@@ -14,7 +14,7 @@ export function CategoryCard({ nama, slug, deskripsi, warna, ikon }) {
   const kelasWarna = colorMap[warna] || colorMap.primary;
   return (
     <Link
-      to={`/kategori/${slug}`}
+      to={`/category/${slug}`}
       className={`group rounded-2xl border p-6 transition hover:-translate-y-1 hover:shadow-lg ${kelasWarna} dark:bg-opacity-5`}
     >
       <span className="material-symbols-outlined text-3xl">{ikon || 'folder'}</span>

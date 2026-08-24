@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { AuthProvider } from './stores/AuthContext.jsx';
 import BerandaPage from './pages/BerandaPage.jsx';
@@ -25,6 +25,25 @@ function Memuat() {
     </div>
   );
 }
+function RedirectArtikel() {
+  const { slug } = useParams();
+  return <Navigate to={`/articles/${slug}`} replace />;
+}
+
+function RedirectKategori() {
+  const { slug } = useParams();
+  return <Navigate to={`/category/${slug}`} replace />;
+}
+
+function RedirectHalaman() {
+  const { slug } = useParams();
+  return <Navigate to={`/page/${slug}`} replace />;
+}
+
+function RedirectAdminArtikel() {
+  const { id } = useParams();
+  return <Navigate to={`/admin/articles/${id}`} replace />;
+}
 
 export default function App() {
   return (
@@ -33,21 +52,34 @@ export default function App() {
         <Suspense fallback={<Memuat />}>
           <Routes>
             <Route path="/" element={<BerandaPage />} />
-            <Route path="/artikel" element={<ArtikelListPage />} />
-            <Route path="/artikel/:slug" element={<ArtikelDetailPage />} />
-            <Route path="/kategori/:slug" element={<KategoriPage />} />
-            <Route path="/halaman/:slug" element={<HalamanPage />} />
-            <Route path="/admin/masuk" element={<LoginPage />} />
+            <Route path="/articles" element={<ArtikelListPage />} />
+            <Route path="/articles/:slug" element={<ArtikelDetailPage />} />
+            <Route path="/category/:slug" element={<KategoriPage />} />
+            <Route path="/page/:slug" element={<HalamanPage />} />
+            {/* Rute lama (Indonesia) dialihkan agar tautan luar tidak putus */}
+            <Route path="/artikel" element={<Navigate to="/articles" replace />} />
+            <Route path="/artikel/:slug" element={<RedirectArtikel />} />
+            <Route path="/kategori/:slug" element={<RedirectKategori />} />
+            <Route path="/halaman/:slug" element={<RedirectHalaman />} />
+            <Route path="/admin/masuk" element={<Navigate to="/admin/login" replace />} />
+            <Route path="/admin/login" element={<LoginPage />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardPage />} />
-              <Route path="artikel" element={<ArtikelAdminPage />} />
-              <Route path="artikel/baru" element={<ArtikelEditorPage />} />
-              <Route path="artikel/:id" element={<ArtikelEditorPage />} />
-              <Route path="kategori" element={<KategoriAdminPage />} />
+              <Route path="articles" element={<ArtikelAdminPage />} />
+              <Route path="articles/new" element={<ArtikelEditorPage />} />
+              <Route path="articles/:id" element={<ArtikelEditorPage />} />
+              <Route path="artikel" element={<Navigate to="/admin/articles" replace />} />
+              <Route path="artikel/baru" element={<Navigate to="/admin/articles/new" replace />} />
+              <Route path="artikel/:id" element={<RedirectAdminArtikel />} />
+              <Route path="categories" element={<KategoriAdminPage />} />
+              <Route path="kategori" element={<Navigate to="/admin/categories" replace />} />
               <Route path="media" element={<MediaAdminPage />} />
-              <Route path="beranda" element={<BerandaAdminPage />} />
-              <Route path="menu" element={<MenuAdminPage />} />
-              <Route path="pengaturan" element={<PengaturanAdminPage />} />
+              <Route path="homepage" element={<BerandaAdminPage />} />
+              <Route path="beranda" element={<Navigate to="/admin/homepage" replace />} />
+              <Route path="menus" element={<MenuAdminPage />} />
+              <Route path="menu" element={<Navigate to="/admin/menus" replace />} />
+              <Route path="settings" element={<PengaturanAdminPage />} />
+              <Route path="pengaturan" element={<Navigate to="/admin/settings" replace />} />
             </Route>
           </Routes>
         </Suspense>

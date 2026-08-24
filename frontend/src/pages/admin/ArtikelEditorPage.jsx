@@ -72,7 +72,7 @@ export default function ArtikelEditorPage() {
       } else {
         await api.post('/admin/artikel', payload);
       }
-      navigate('/admin/artikel');
+      navigate('/admin/articles');
     } catch (err) {
       setError(
         err.data

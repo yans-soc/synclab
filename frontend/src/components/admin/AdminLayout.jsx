@@ -4,23 +4,23 @@ import ThemeToggle from '../layout/ThemeToggle.jsx';
 
 const NAV = [
   { ke: '/admin', ikon: 'dashboard', label: 'Dashboard', akhir: true },
-  { ke: '/admin/artikel', ikon: 'article', label: 'Artikel' },
-  { ke: '/admin/kategori', ikon: 'category', label: 'Kategori' },
+  { ke: '/admin/articles', ikon: 'article', label: 'Articles' },
+  { ke: '/admin/categories', ikon: 'category', label: 'Categories' },
   { ke: '/admin/media', ikon: 'perm_media', label: 'Media' },
-  { ke: '/admin/beranda', ikon: 'home_app_logo', label: 'Beranda' },
-  { ke: '/admin/menu', ikon: 'menu', label: 'Menu' },
-  { ke: '/admin/pengaturan', ikon: 'settings', label: 'Pengaturan' },
+  { ke: '/admin/homepage', ikon: 'home_app_logo', label: 'Homepage' },
+  { ke: '/admin/menus', ikon: 'menu', label: 'Menus' },
+  { ke: '/admin/settings', ikon: 'settings', label: 'Settings' },
 ];
 
 export default function AdminLayout() {
   const { pengguna, keluar } = useAuth();
   const navigate = useNavigate();
 
-  if (!pengguna) return <Navigate to="/admin/masuk" replace />;
+  if (!pengguna) return <Navigate to="/admin/login" replace />;
 
   async function prosesKeluar() {
     await keluar();
-    navigate('/admin/masuk');
+    navigate('/admin/login');
   }
 
   return (

@@ -14,7 +14,7 @@ export function ArticleCard({ judul, slug, kutipan, diterbitkan_pada, gambar_ung
   const waktuBaca = hitungWaktuBaca(konten || `${judul} ${kutipan || ''}`);
   return (
     <Link
-      to={`/artikel/${slug}`}
+      to={`/articles/${slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
     >
       {gambar_unggulan ? (

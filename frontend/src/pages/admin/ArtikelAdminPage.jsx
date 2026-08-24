@@ -42,7 +42,7 @@ export default function ArtikelAdminPage() {
           Artikel
         </h1>
         <Link
-          to="/admin/artikel/baru"
+          to="/admin/articles/new"
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
         >
           <span className="material-symbols-outlined text-base">add</span>
@@ -114,7 +114,7 @@ export default function ArtikelAdminPage() {
                 </td>
                 <td className="px-5 py-3 text-right">
                   <Link
-                    to={`/admin/artikel/${a.id}`}
+                    to={`/admin/articles/${a.id}`}
                     className="mr-1 inline-flex rounded-lg p-2 text-slate-400 hover:bg-primary/10 hover:text-primary"
                     title="Sunting"
                   >

@@ -52,14 +52,14 @@ export default function DashboardPage() {
         <h2 className="font-semibold text-slate-900 dark:text-white">Aksi Cepat</h2>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
-            to="/admin/artikel/baru"
+            to="/admin/articles/new"
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
           >
             <span className="material-symbols-outlined text-base">add</span>
             Artikel Baru
           </Link>
           <Link
-            to="/admin/beranda"
+            to="/admin/homepage"
             className="inline-flex items-center gap-2 rounded-lg border border-surface-container-high px-4 py-2 text-sm font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
           >
             <span className="material-symbols-outlined text-base">home_app_logo</span>

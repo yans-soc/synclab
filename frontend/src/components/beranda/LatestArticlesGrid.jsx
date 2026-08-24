@@ -20,7 +20,7 @@ export default function LatestArticlesGrid({ pengaturan, dataAwal = null }) {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeader
           judul={pengaturan.judul_seksi}
-          tautan="/artikel"
+          tautan="/articles"
           teksTautan={pengaturan.teks_tautan}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
