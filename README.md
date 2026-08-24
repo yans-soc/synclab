@@ -52,3 +52,5 @@ Kredensial admin hasil seed: `admin@synclab.id` / `SandiAman123!`.
 ## Deployment (VPS)
 
 Production: http://43.156.102.177 - auto-deploy via GitHub webhook (push ke main -> VPS menjalankan git pull, build frontend, restart PM2).
+
+> Webhook endpoint: `http://43.156.102.177:9000/hooks/synclab-deploy` (HMAC-SHA256, hanya event push ke main).
