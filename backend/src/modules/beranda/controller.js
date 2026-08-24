@@ -2,7 +2,7 @@ import * as service from './service.js';
 import { berhasil, gagal } from '../../utils/response.js';
 
 export async function aktif(req, res) {
-  const data = await service.berandaAktif();
+  const data = await service.berandaAktif({ lengkap: req.query.lengkap === '1' });
   if (!data) return gagal(res, 'Belum ada beranda yang aktif', 404);
   return berhasil(res, 'Beranda aktif berhasil dimuat', data);
 }

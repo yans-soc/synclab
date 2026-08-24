@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { hitungWaktuBaca, formatTanggal } from '../../utils/format.js';
+import Gambar from './Gambar.jsx';
 import PostViewCount from './PostViewCount.jsx';
 
 const badgeWarna = {
@@ -16,20 +17,18 @@ export function ArticleCard({ judul, slug, kutipan, diterbitkan_pada, gambar_ung
       to={`/artikel/${slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
     >
-      <div className="aspect-video overflow-hidden bg-surface-container dark:bg-slate-800">
-        {gambar_unggulan ? (
-          <img
-            src={gambar_unggulan}
-            alt={judul}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="material-symbols-outlined text-4xl text-slate-300">image</span>
-          </div>
-        )}
-      </div>
+      {gambar_unggulan ? (
+        <Gambar
+          src={gambar_unggulan}
+          alt={judul}
+          ukuran="small"
+          imgClassName="transition duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex aspect-video items-center justify-center bg-surface-container dark:bg-slate-800">
+          <span className="material-symbols-outlined text-4xl text-slate-300">image</span>
+        </div>
+      )}
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           {kategori.map((k) => (

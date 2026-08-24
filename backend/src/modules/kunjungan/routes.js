@@ -5,6 +5,12 @@ import { berhasil, gagal } from '../../utils/response.js';
 
 const router = Router();
 
+// Klaim view & statistik tidak boleh di-cache di lapisan mana pun.
+router.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 // Klaim view tervalidasi dari halaman detail (dipanggil frontend setelah
 // pengunjung aktif membaca >= 10 detik). Selalu 200; field dicatat menandakan
 // apakah view lolos seluruh validasi dan counter bertambah.

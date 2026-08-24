@@ -4,6 +4,7 @@ import { marked } from 'marked';
 import { api } from '../services/api.js';
 import AppLayout from '../components/layout/AppLayout.jsx';
 import PostViewCount from '../components/beranda/PostViewCount.jsx';
+import Gambar from '../components/beranda/Gambar.jsx';
 import { hitungWaktuBaca, formatTanggal } from '../utils/format.js';
 import { usePelacakView } from '../hooks/usePelacakView.js';
 
@@ -86,10 +87,12 @@ export default function ArtikelDetailPage() {
           <PostViewCount jumlah={jumlahDilihat} ikonClass="text-base" />
         </div>
         {artikel.gambar_unggulan && (
-          <img
+          <Gambar
             src={artikel.gambar_unggulan}
             alt={artikel.judul}
-            className="mt-8 w-full rounded-2xl object-cover"
+            ukuran="medium"
+            eager
+            className="mt-8 rounded-2xl"
           />
         )}
         <div

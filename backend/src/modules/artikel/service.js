@@ -7,9 +7,9 @@ const SELECT_PUBLIK = `
          m.url AS gambar_unggulan,
          p.nama_lengkap AS penulis_nama, p.foto_profil AS penulis_foto,
          COALESCE((
-           SELECT jsonb_agg(jsonb_build_object('nama', k.nama, 'slug', k.slug, 'warna', k.warna))
+           SELECT jsonb_agg(jsonb_build_object('nama', kat.nama, 'slug', kat.slug, 'warna', kat.warna))
            FROM artikel_kategori ak
-           JOIN kategori k ON k.id = ak.id_kategori
+           JOIN kategori kat ON kat.id = ak.id_kategori
            WHERE ak.id_artikel = a.id
          ), '[]'::jsonb) AS kategori
   FROM artikel a
@@ -78,7 +78,7 @@ export async function daftarPublik({ kategori, halaman = 1, limit = 10, urutkan 
 // diurutkan deterministik (terbit terbaru, lalu id) sehingga tampilan tetap stabil.
 export async function daftarTrending(limit = 6) {
   const { rows } = await kueri(
-    `${SELECT_PUBLIK}
+    `${SELECT_PUBLIK.replace('a.id,', 'a.id, kv.kunjungan_7_hari,')}
      LEFT JOIN (
        SELECT id_artikel, COUNT(*)::int AS kunjungan_7_hari
        FROM kunjungan_artikel

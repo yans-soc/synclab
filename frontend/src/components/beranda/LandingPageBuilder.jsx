@@ -19,8 +19,9 @@ export default function LandingPageBuilder() {
   const [memuat, setMemuat] = useState(true);
 
   useEffect(() => {
+    // Satu request komposit: struktur + data seksi sekaligus (tanpa waterfall).
     api
-      .get('/beranda/aktif')
+      .get('/beranda/aktif?lengkap=1')
       .then((r) => setBeranda(r.data))
       .catch(() => setBeranda(null))
       .finally(() => setMemuat(false));
@@ -49,7 +50,15 @@ export default function LandingPageBuilder() {
       {beranda.bagian.map((bagian) => {
         const Komponen = PETA_KOMPONEN[bagian.tipe];
         if (!Komponen) return null;
-        return <Komponen key={bagian.id} pengaturan={bagian.pengaturan} />;
+        const dataAwal =
+          bagian.tipe === 'explore_topics'
+            ? beranda.data?.kategori
+            : bagian.tipe === 'latest_articles'
+              ? beranda.data?.artikel_terbaru
+              : bagian.tipe === 'trending_articles'
+                ? beranda.data?.trending
+                : null;
+        return <Komponen key={bagian.id} pengaturan={bagian.pengaturan} dataAwal={dataAwal} />;
       })}
     </>
   );

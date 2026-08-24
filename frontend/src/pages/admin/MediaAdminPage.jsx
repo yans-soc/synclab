@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../services/api.js';
+import { urlMedia } from '../../utils/media.js';
 
 export default function MediaAdminPage() {
   const [media, setMedia] = useState([]);
@@ -58,7 +59,7 @@ export default function MediaAdminPage() {
           <div key={m.id} className="group relative overflow-hidden rounded-2xl border border-surface-container-high bg-surface-container-lowest dark:border-slate-800 dark:bg-slate-950">
             <div className="aspect-square bg-surface-container dark:bg-slate-800">
               {m.tipe_mime.startsWith('image/') ? (
-                <img src={m.url} alt={m.nama_berkas} className="h-full w-full object-cover" loading="lazy" />
+                <img src={urlMedia(m.url, 'thumbnail')} alt={m.nama_berkas} className="h-full w-full object-cover" loading="lazy" />
               ) : (
                 <div className="flex h-full items-center justify-center">
                   <span className="material-symbols-outlined text-4xl text-slate-400">description</span>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../services/api.js';
+import { urlMedia } from '../../utils/media.js';
 
 export default function MediaManagerModal({ terbuka, tutup, pilih }) {
   const [media, setMedia] = useState([]);
@@ -77,7 +78,7 @@ export default function MediaManagerModal({ terbuka, tutup, pilih }) {
             >
               <div className="aspect-square bg-surface-container dark:bg-slate-800">
                 {m.tipe_mime.startsWith('image/') ? (
-                  <img src={m.url} alt={m.nama_berkas} className="h-full w-full object-cover" loading="lazy" />
+                  <img src={urlMedia(m.url, 'thumbnail')} alt={m.nama_berkas} className="h-full w-full object-cover" loading="lazy" />
                 ) : (
                   <div className="flex h-full items-center justify-center">
                     <span className="material-symbols-outlined text-3xl text-slate-400">description</span>

@@ -3,16 +3,17 @@ import { api } from '../../services/api.js';
 import SectionHeader from './SectionHeader.jsx';
 import { ArticleCard } from './ArticleCard.jsx';
 
-export default function LatestArticlesGrid({ pengaturan }) {
-  const [artikel, setArtikel] = useState([]);
+export default function LatestArticlesGrid({ pengaturan, dataAwal = null }) {
+  const [artikel, setArtikel] = useState(dataAwal || []);
   const jumlah = pengaturan.jumlah_tampil || 6;
 
   useEffect(() => {
+    if (dataAwal) return; // data sudah datang dari endpoint komposit beranda
     api
       .get(`/artikel?limit=${jumlah}`)
       .then((r) => setArtikel(r.data || []))
       .catch(() => {});
-  }, [jumlah]);
+  }, [jumlah, dataAwal]);
 
   return (
     <section className="py-10 md:py-16">

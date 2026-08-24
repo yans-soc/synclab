@@ -26,12 +26,13 @@ export function CategoryCard({ nama, slug, deskripsi, warna, ikon }) {
   );
 }
 
-export default function CategoryExplorer({ pengaturan }) {
-  const [kategori, setKategori] = useState([]);
+export default function CategoryExplorer({ pengaturan, dataAwal = null }) {
+  const [kategori, setKategori] = useState(dataAwal || []);
 
   useEffect(() => {
+    if (dataAwal) return; // data sudah datang dari endpoint komposit beranda
     api.get('/kategori').then((r) => setKategori(r.data || [])).catch(() => {});
-  }, []);
+  }, [dataAwal]);
 
   return (
     <section className="bg-surface-container-low py-10 dark:bg-slate-900 md:py-16">

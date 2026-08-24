@@ -1,6 +1,8 @@
 import { kueri, denganTransaksi } from '../../database/pool.js';
+import { daftarPublik, daftarTrending } from '../artikel/service.js';
+import { daftar as daftarKategori } from '../kategori/service.js';
 
-export async function berandaAktif() {
+export async function berandaAktif({ lengkap = false } = {}) {
   const { rows } = await kueri(
     `SELECT b.id AS id_beranda, b.judul AS judul_beranda,
             COALESCE((
@@ -19,7 +21,21 @@ export async function berandaAktif() {
      ORDER BY b.versi DESC
      LIMIT 1`
   );
-  return rows[0] || null;
+  const beranda = rows[0] || null;
+  if (!beranda || !lengkap) return beranda;
+
+  // Mode komposit: data seluruh seksi dalam SATU respons agar homepage tidak
+  // membuat waterfall 4 request (struktur + kategori + terbaru + trending).
+  const kebutuhan = new Set(beranda.bagian.map((b) => b.tipe));
+  const [kategori, terbaru, trending] = await Promise.all([
+    kebutuhan.has('explore_topics') ? daftarKategori() : Promise.resolve(null),
+    kebutuhan.has('latest_articles')
+      ? daftarPublik({ limit: 6 }).then((r) => r.data)
+      : Promise.resolve(null),
+    kebutuhan.has('trending_articles') ? daftarTrending(6) : Promise.resolve(null),
+  ]);
+  beranda.data = { kategori, artikel_terbaru: terbaru, trending };
+  return beranda;
 }
 
 export async function daftarBeranda() {

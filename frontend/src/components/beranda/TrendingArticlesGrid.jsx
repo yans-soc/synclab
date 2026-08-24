@@ -3,16 +3,17 @@ import { api } from '../../services/api.js';
 import SectionHeader from './SectionHeader.jsx';
 import { ArticleCard } from './ArticleCard.jsx';
 
-export default function TrendingArticlesGrid({ pengaturan }) {
-  const [artikel, setArtikel] = useState([]);
+export default function TrendingArticlesGrid({ pengaturan, dataAwal = null }) {
+  const [artikel, setArtikel] = useState(dataAwal || []);
   const jumlah = pengaturan.jumlah_tampil || 6;
 
   useEffect(() => {
+    if (dataAwal) return; // data sudah datang dari endpoint komposit beranda
     api
       .get(`/artikel/trending?limit=${jumlah}`)
       .then((r) => setArtikel(r.data || []))
       .catch(() => {});
-  }, [jumlah]);
+  }, [jumlah, dataAwal]);
 
   if (artikel.length === 0) return null;
 
