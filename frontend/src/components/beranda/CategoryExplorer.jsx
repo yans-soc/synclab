@@ -34,13 +34,13 @@ export default function CategoryExplorer({ pengaturan }) {
   }, []);
 
   return (
-    <section className="bg-surface-container-low py-16 dark:bg-slate-900">
-      <div className="mx-auto max-w-6xl px-4">
+    <section className="bg-surface-container-low py-10 dark:bg-slate-900 md:py-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeader
           subjudul={pengaturan.subjudul}
           judul={pengaturan.judul_seksi}
         />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {kategori.map((k) => (
             <CategoryCard key={k.id} {...k} />
           ))}

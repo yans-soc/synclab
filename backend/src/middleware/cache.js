@@ -1,8 +1,12 @@
 // Cache in-memory untuk GET publik; dibersihkan otomatis saat ada mutasi admin.
 const cache = new Map();
 
+// Detail artikel & trending tidak di-cache: setiap kunjungan harus tercatat
+// dan trending harus selalu realtime.
+const TANPA_CACHE = /^\/api\/v1\/artikel\/[^/?]+/;
+
 export function cachePublik(req, res, next) {
-  if (req.method !== 'GET') return next();
+  if (req.method !== 'GET' || TANPA_CACHE.test(req.originalUrl)) return next();
   const kunci = req.originalUrl;
   const entri = cache.get(kunci);
   if (entri) {

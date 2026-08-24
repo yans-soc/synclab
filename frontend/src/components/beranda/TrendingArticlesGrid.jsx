@@ -3,28 +3,36 @@ import { api } from '../../services/api.js';
 import SectionHeader from './SectionHeader.jsx';
 import { ArticleCard } from './ArticleCard.jsx';
 
-export default function LatestArticlesGrid({ pengaturan }) {
+export default function TrendingArticlesGrid({ pengaturan }) {
   const [artikel, setArtikel] = useState([]);
   const jumlah = pengaturan.jumlah_tampil || 6;
 
   useEffect(() => {
     api
-      .get(`/artikel?limit=${jumlah}`)
+      .get(`/artikel/trending?limit=${jumlah}`)
       .then((r) => setArtikel(r.data || []))
       .catch(() => {});
   }, [jumlah]);
+
+  if (artikel.length === 0) return null;
 
   return (
     <section className="py-10 md:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeader
+          subjudul={pengaturan.subjudul}
           judul={pengaturan.judul_seksi}
           tautan="/artikel"
           teksTautan={pengaturan.teks_tautan}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {artikel.map((a) => (
-            <ArticleCard key={a.id} {...a} />
+          {artikel.map((a, i) => (
+            <div key={a.id} className="relative">
+              <span className="absolute -top-2.5 left-4 z-10 rounded-full bg-primary px-2.5 py-1 text-xs font-extrabold text-white shadow-md">
+                #{i + 1}
+              </span>
+              <ArticleCard {...a} />
+            </div>
           ))}
         </div>
       </div>

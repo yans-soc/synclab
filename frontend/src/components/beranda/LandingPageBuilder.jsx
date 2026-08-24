@@ -3,11 +3,13 @@ import { api } from '../../services/api.js';
 import HeroSection from './HeroSection.jsx';
 import CategoryExplorer from './CategoryExplorer.jsx';
 import LatestArticlesGrid from './LatestArticlesGrid.jsx';
+import TrendingArticlesGrid from './TrendingArticlesGrid.jsx';
 import CallToActionBanner from './CallToActionBanner.jsx';
 
 const PETA_KOMPONEN = {
   hero_section: HeroSection,
   explore_topics: CategoryExplorer,
+  trending_articles: TrendingArticlesGrid,
   latest_articles: LatestArticlesGrid,
   cta_banner: CallToActionBanner,
 };

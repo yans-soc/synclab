@@ -13,7 +13,7 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-surface-container-high bg-surface-container-low dark:border-slate-800 dark:bg-slate-900">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-2">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 md:grid-cols-2 md:py-10">
         <div>
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-2xl text-primary">sync</span>

@@ -52,7 +52,7 @@ export default function ArtikelDetailPage() {
 
   return (
     <AppLayout>
-      <article className="mx-auto max-w-3xl px-4 py-12">
+      <article className="mx-auto max-w-3xl px-4 py-8 sm:px-6 md:py-12">
         <div className="mb-4 flex flex-wrap gap-2">
           {artikel.kategori.map((k) => (
             <Link
@@ -64,10 +64,10 @@ export default function ArtikelDetailPage() {
             </Link>
           ))}
         </div>
-        <h1 className="font-headline text-3xl font-extrabold leading-tight text-slate-900 dark:text-white md:text-4xl">
+        <h1 className="font-headline text-2xl font-extrabold leading-tight text-slate-900 dark:text-white sm:text-3xl md:text-4xl">
           {artikel.judul}
         </h1>
-        <div className="mt-4 flex items-center gap-4 text-sm text-slate-400">
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-base">person</span>
             {artikel.penulis.nama_lengkap}

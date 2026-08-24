@@ -21,12 +21,12 @@ export default function ArtikelListPage() {
 
   return (
     <AppLayout>
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-12">
         <SectionHeader judul="Semua Artikel" subjudul="Katalog Konten" />
         {artikel.length === 0 ? (
           <p className="py-16 text-center text-slate-500">Belum ada artikel terbit.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {artikel.map((a) => (
               <ArticleCard key={a.id} {...a} />
             ))}

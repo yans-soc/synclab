@@ -67,6 +67,25 @@ export async function daftarPublik({ kategori, halaman = 1, limit = 10 }) {
   };
 }
 
+// Trending = kunjungan terbanyak 7 hari terakhir; artikel tanpa kunjungan
+// diurutkan deterministik (terbit terbaru, lalu id) sehingga tampilan tetap stabil.
+export async function daftarTrending(limit = 6) {
+  const { rows } = await kueri(
+    `${SELECT_PUBLIK}
+     LEFT JOIN (
+       SELECT id_artikel, COUNT(*)::int AS kunjungan_7_hari
+       FROM kunjungan_artikel
+       WHERE dikunjungi_pada >= now() - INTERVAL '7 days'
+       GROUP BY id_artikel
+     ) kv ON kv.id_artikel = a.id
+     WHERE a.status = 'terbit'
+     ORDER BY COALESCE(kv.kunjungan_7_hari, 0) DESC, a.diterbitkan_pada DESC, a.id
+     LIMIT $1`,
+    [limit]
+  );
+  return rows.map(bentukArtikelPublik);
+}
+
 export async function detailPublikBySlug(slug) {
   const { rows } = await kueri(
     `${SELECT_PUBLIK.replace('a.id,', 'a.id, a.konten,')}
@@ -74,6 +93,7 @@ export async function detailPublikBySlug(slug) {
     [slug]
   );
   if (!rows[0]) return null;
+  kueri('INSERT INTO kunjungan_artikel (id_artikel) VALUES ($1)', [rows[0].id]).catch(() => {});
   const seo = await kueri(
     `SELECT judul_seo, deskripsi_seo, kata_kunci, url_kanonis, gambar_og
      FROM metadata_seo WHERE id_artikel = $1`,

@@ -6,6 +6,7 @@ import { skemaArtikelBuat, skemaArtikelPerbarui } from '../../validators/index.j
 
 export const routerPublik = Router();
 routerPublik.get('/', controller.daftarPublik);
+routerPublik.get('/trending', controller.trending);
 routerPublik.get('/:slug', controller.detailPublik);
 
 export const routerAdmin = Router();

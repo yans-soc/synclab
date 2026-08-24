@@ -107,14 +107,28 @@ VALUES
   TRUE
 ),
 (
+  'f4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04',
+  'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
+  'Daftar Artikel Trending',
+  'trending_articles',
+  3,
+  '{
+    "subjudul": "Paling Banyak Dibaca",
+    "judul_seksi": "Trending Articles",
+    "jumlah_tampil": 6,
+    "teks_tautan": "View All Posts"
+  }'::jsonb,
+  TRUE
+),
+(
   'f3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
   'Daftar Artikel Terbaru',
   'latest_articles',
-  3,
+  4,
   '{
     "judul_seksi": "Latest Articles",
-    "jumlah_tampil": 3,
+    "jumlah_tampil": 6,
     "teks_tautan": "View All Posts"
   }'::jsonb,
   TRUE

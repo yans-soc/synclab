@@ -28,7 +28,7 @@ export default function HalamanPage() {
 
   return (
     <AppLayout>
-      <div className="mx-auto max-w-3xl px-4 py-12">
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 md:py-12">
         {status === 'memuat' && (
           <div className="flex min-h-[40vh] items-center justify-center">
             <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
@@ -44,7 +44,7 @@ export default function HalamanPage() {
         )}
         {status === 'ok' && (
           <>
-            <h1 className="font-headline text-3xl font-extrabold text-slate-900 dark:text-white md:text-4xl">
+            <h1 className="font-headline text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl md:text-4xl">
               {halaman.judul}
             </h1>
             <div

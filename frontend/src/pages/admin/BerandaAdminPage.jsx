@@ -4,6 +4,7 @@ import { api } from '../../services/api.js';
 const TIPE_LABEL = {
   hero_section: 'Hero Section',
   explore_topics: 'Jelajah Topik',
+  trending_articles: 'Artikel Trending',
   latest_articles: 'Artikel Terbaru',
   cta_banner: 'Banner CTA',
 };
@@ -15,7 +16,8 @@ const CONTOH_PENGATURAN = {
     cta: { teks_tombol: 'Mulai', url_tujuan: '/artikel', ikon: 'arrow_forward' },
   },
   explore_topics: { subjudul: 'Topik', judul_seksi: 'Jelajahi Topik' },
-  latest_articles: { judul_seksi: 'Artikel Terbaru', jumlah_tampil: 3, teks_tautan: 'Lihat Semua' },
+  trending_articles: { subjudul: 'Paling Banyak Dibaca', judul_seksi: 'Artikel Trending', jumlah_tampil: 6, teks_tautan: 'Lihat Semua' },
+  latest_articles: { judul_seksi: 'Artikel Terbaru', jumlah_tampil: 6, teks_tautan: 'Lihat Semua' },
   cta_banner: {
     judul: 'Judul Banner',
     deskripsi: 'Deskripsi banner.',

@@ -20,6 +20,12 @@ export async function detailPublik(req, res) {
   return berhasil(res, 'Detail artikel berhasil ditemukan', data);
 }
 
+export async function trending(req, res) {
+  const limit = Math.min(angkaHal(req.query.limit, 6), 24);
+  const data = await service.daftarTrending(limit);
+  return berhasil(res, 'Artikel trending 7 hari terakhir berhasil diambil', data);
+}
+
 export async function daftarAdmin(req, res) {
   const halaman = angkaHal(req.query.halaman, 1);
   const limit = Math.min(angkaHal(req.query.limit, 10), 100);

@@ -71,6 +71,12 @@ export const skemaPengaturanPerTipe = {
     jumlah_tampil: z.number().int().min(1).max(24).default(3),
     teks_tautan: z.string().optional(),
   }),
+  trending_articles: z.object({
+    subjudul: z.string().optional(),
+    judul_seksi: z.string().min(1),
+    jumlah_tampil: z.number().int().min(1).max(24).default(6),
+    teks_tautan: z.string().optional(),
+  }),
   cta_banner: z.object({
     judul: z.string().min(1),
     deskripsi: z.string().optional(),
