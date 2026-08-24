@@ -2,159 +2,159 @@ import { z } from 'zod';
 
 const uuid = z.string().uuid();
 
-export const skemaMasuk = z.object({
-  surel: z.string().email(),
-  kata_sandi: z.string().min(6),
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
 });
 
-export const skemaSeo = z.object({
-  judul_seo: z.string().max(150).optional(),
-  deskripsi_seo: z.string().optional(),
-  kata_kunci: z.string().max(255).optional(),
-  url_kanonis: z.string().max(500).optional(),
-  gambar_og: z.string().max(500).optional(),
+export const seoSchema = z.object({
+  seo_title: z.string().max(150).optional(),
+  seo_description: z.string().optional(),
+  seo_keywords: z.string().max(255).optional(),
+  canonical_url: z.string().max(500).optional(),
+  og_image: z.string().max(500).optional(),
 });
 
-export const skemaArtikelBuat = z.object({
-  judul: z.string().min(1).max(255),
+export const articleCreateSchema = z.object({
+  title: z.string().min(1).max(255),
   slug: z.string().max(280).optional(),
-  kutipan: z.string().optional(),
-  konten: z.string().min(1),
-  status: z.enum(['draf', 'terbit', 'arsip']).default('draf'),
-  id_gambar_unggulan: uuid.nullish(),
-  kategori_ids: z.array(uuid).default([]),
-  seo: skemaSeo.optional(),
+  excerpt: z.string().optional(),
+  content: z.string().min(1),
+  status: z.enum(['draft', 'published', 'archived']).default('draft'),
+  featured_image_id: uuid.nullish(),
+  category_ids: z.array(uuid).default([]),
+  seo: seoSchema.optional(),
 });
 
-export const skemaArtikelPerbarui = skemaArtikelBuat.partial();
+export const articleUpdateSchema = articleCreateSchema.partial();
 
-export const skemaKategori = z.object({
-  nama: z.string().min(1).max(100),
+export const categorySchema = z.object({
+  name: z.string().min(1).max(100),
   slug: z.string().max(120).optional(),
-  deskripsi: z.string().optional(),
-  warna: z.enum(['primary', 'secondary', 'tertiary', 'ai-purple']).default('primary'),
-  ikon: z.string().max(100).default('folder'),
+  description: z.string().optional(),
+  color: z.enum(['primary', 'secondary', 'tertiary', 'ai-purple']).default('primary'),
+  icon: z.string().max(100).default('folder'),
 });
 
-export const skemaKategoriPerbarui = skemaKategori.partial();
+export const categoryUpdateSchema = categorySchema.partial();
 
-export const skemaHalaman = z.object({
-  judul: z.string().min(1).max(255),
+export const pageSchema = z.object({
+  title: z.string().min(1).max(255),
   slug: z.string().max(280).optional(),
-  konten: z.string().min(1),
-  status: z.enum(['draf', 'terbit']).default('draf'),
-  seo: skemaSeo.optional(),
+  content: z.string().min(1),
+  status: z.enum(['draft', 'published']).default('draft'),
+  seo: seoSchema.optional(),
 });
 
-export const skemaHalamanPerbarui = skemaHalaman.partial();
+export const pageUpdateSchema = pageSchema.partial();
 
-const skemaCta = z.object({
-  teks_tombol: z.string().min(1),
-  url_tujuan: z.string().min(1),
-  ikon: z.string().optional(),
+const ctaSchema = z.object({
+  button_text: z.string().min(1),
+  target_url: z.string().min(1),
+  icon: z.string().optional(),
 });
 
-// Validasi JSONB bagian_beranda.pengaturan per tipe section (wajib Zod, lihat agentrules.md §2)
-export const skemaPengaturanPerTipe = {
+// Validasi JSONB homepage_sections.settings per type section (wajib Zod, lihat agentrules.md §2)
+export const settingsSchemaByType = {
   hero_section: z.object({
-    judul_utama: z.string().min(1),
-    deskripsi: z.string().min(1),
-    cta: skemaCta,
-    desain: z.object({ warna_tombol: z.string().optional() }).optional(),
+    main_title: z.string().min(1),
+    description: z.string().min(1),
+    cta: ctaSchema,
+    design: z.object({ button_color: z.string().optional() }).optional(),
   }),
   explore_topics: z.object({
-    subjudul: z.string().optional(),
-    judul_seksi: z.string().min(1),
+    subtitle: z.string().optional(),
+    section_title: z.string().min(1),
   }),
   latest_articles: z.object({
-    judul_seksi: z.string().min(1),
-    jumlah_tampil: z.number().int().min(1).max(24).default(3),
-    teks_tautan: z.string().optional(),
+    section_title: z.string().min(1),
+    display_count: z.number().int().min(1).max(24).default(3),
+    link_text: z.string().optional(),
   }),
   trending_articles: z.object({
-    subjudul: z.string().optional(),
-    judul_seksi: z.string().min(1),
-    jumlah_tampil: z.number().int().min(1).max(24).default(6),
-    teks_tautan: z.string().optional(),
+    subtitle: z.string().optional(),
+    section_title: z.string().min(1),
+    display_count: z.number().int().min(1).max(24).default(6),
+    link_text: z.string().optional(),
   }),
   cta_banner: z.object({
-    judul: z.string().min(1),
-    deskripsi: z.string().optional(),
-    cta: skemaCta,
+    title: z.string().min(1),
+    description: z.string().optional(),
+    cta: ctaSchema,
   }),
 };
 
-export const TIPE_BAGIAN = Object.keys(skemaPengaturanPerTipe);
+export const SECTION_TYPES = Object.keys(settingsSchemaByType);
 
-export const skemaBagianBeranda = z
+export const sectionSchema = z
   .object({
-    judul_bagian: z.string().min(1).max(150),
-    tipe: z.enum(TIPE_BAGIAN),
-    posisi: z.number().int().min(0).default(0),
-    aktif: z.boolean().default(true),
-    pengaturan: z.record(z.unknown()),
+    section_title: z.string().min(1).max(150),
+    type: z.enum(SECTION_TYPES),
+    position: z.number().int().min(0).default(0),
+    active: z.boolean().default(true),
+    settings: z.record(z.unknown()),
   })
-  .superRefine((nilai, ctx) => {
-    const hasil = skemaPengaturanPerTipe[nilai.tipe].safeParse(nilai.pengaturan);
-    if (!hasil.success) {
-      hasil.error.issues.forEach((i) =>
-        ctx.addIssue({ code: 'custom', path: ['pengaturan', ...i.path], message: i.message })
+  .superRefine((value, ctx) => {
+    const result = settingsSchemaByType[value.type].safeParse(value.settings);
+    if (!result.success) {
+      result.error.issues.forEach((i) =>
+        ctx.addIssue({ code: 'custom', path: ['settings', ...i.path], message: i.message })
       );
     }
   })
-  .transform((nilai) => ({
-    ...nilai,
-    pengaturan: skemaPengaturanPerTipe[nilai.tipe].parse(nilai.pengaturan),
+  .transform((value) => ({
+    ...value,
+    settings: settingsSchemaByType[value.type].parse(value.settings),
   }));
 
-export const skemaBagianPerbarui = z
+export const sectionUpdateSchema = z
   .object({
-    judul_bagian: z.string().min(1).max(150).optional(),
-    tipe: z.enum(TIPE_BAGIAN).optional(),
-    posisi: z.number().int().min(0).optional(),
-    aktif: z.boolean().optional(),
-    pengaturan: z.record(z.unknown()).optional(),
+    section_title: z.string().min(1).max(150).optional(),
+    type: z.enum(SECTION_TYPES).optional(),
+    position: z.number().int().min(0).optional(),
+    active: z.boolean().optional(),
+    settings: z.record(z.unknown()).optional(),
   })
-  .refine((nilai) => !nilai.pengaturan || !!nilai.tipe, {
-    message: 'tipe wajib disertakan saat mengubah pengaturan',
-    path: ['tipe'],
+  .refine((value) => !value.settings || !!value.type, {
+    message: 'type is required when updating settings',
+    path: ['type'],
   })
-  .superRefine((nilai, ctx) => {
-    if (nilai.pengaturan && nilai.tipe) {
-      const hasil = skemaPengaturanPerTipe[nilai.tipe].safeParse(nilai.pengaturan);
-      if (!hasil.success) {
-        hasil.error.issues.forEach((i) =>
-          ctx.addIssue({ code: 'custom', path: ['pengaturan', ...i.path], message: i.message })
+  .superRefine((value, ctx) => {
+    if (value.settings && value.type) {
+      const result = settingsSchemaByType[value.type].safeParse(value.settings);
+      if (!result.success) {
+        result.error.issues.forEach((i) =>
+          ctx.addIssue({ code: 'custom', path: ['settings', ...i.path], message: i.message })
         );
       }
     }
   })
-  .transform((nilai) => ({
-    ...nilai,
-    ...(nilai.pengaturan && nilai.tipe
-      ? { pengaturan: skemaPengaturanPerTipe[nilai.tipe].parse(nilai.pengaturan) }
+  .transform((value) => ({
+    ...value,
+    ...(value.settings && value.type
+      ? { settings: settingsSchemaByType[value.type].parse(value.settings) }
       : {}),
   }));
 
-export const skemaSusunUlangBagian = z.object({
-  urutan: z.array(z.object({ id: uuid, posisi: z.number().int().min(0) })).min(1),
+export const reorderSchema = z.object({
+  order: z.array(z.object({ id: uuid, position: z.number().int().min(0) })).min(1),
 });
 
-export const skemaMenu = z.object({
-  nama: z.string().min(1).max(100),
-  lokasi: z.string().min(1).max(50),
+export const menuSchema = z.object({
+  name: z.string().min(1).max(100),
+  location: z.string().min(1).max(50),
 });
 
-export const skemaItemMenu = z.object({
-  id_induk: uuid.nullish(),
+export const menuItemSchema = z.object({
+  parent_id: uuid.nullish(),
   label: z.string().min(1).max(100),
   url: z.string().min(1).max(500),
-  posisi: z.number().int().min(0).default(0),
-  ikon: z.string().max(100).optional(),
+  position: z.number().int().min(0).default(0),
+  icon: z.string().max(100).optional(),
 });
 
-export const skemaPengaturanMassal = z.object({
-  pengaturan: z
-    .array(z.object({ kunci: z.string().min(1), nilai: z.string() }))
+export const bulkSettingsSchema = z.object({
+  settings: z
+    .array(z.object({ key: z.string().min(1), value: z.string() }))
     .min(1),
 });

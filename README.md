@@ -1,56 +1,57 @@
 # SYNCLAB CMS
 
-CMS bergaya WordPress dengan stack **React + Tailwind CSS** (frontend), **Node.js REST API** (backend), dan **PostgreSQL** (database). Target MVP: Landing Page SYNCLAB yang sepenuhnya data-driven dari CMS (hero, explore topics, latest articles, CTA, menu header/footer) beserta admin panel.
+A WordPress-style CMS built with **React + Tailwind CSS** (frontend), a **Node.js REST API** (backend), and **PostgreSQL** (database). MVP target: a fully data-driven SYNCLAB landing page (hero, explore topics, latest articles, CTA, header/footer menus) plus an admin panel.
 
-## Struktur Proyek
+## Project Structure
 
 ```text
 synclab/
 ├── backend/            # Node.js REST API (Express, controller-service pattern)
 ├── frontend/           # React + Vite + Tailwind CSS
 ├── database/
-│   ├── migrations/     # 001_schema.sql (diekstrak dari schema.md)
-│   └── seeds/          # seed.sql (diekstrak dari seed.md)
+│   ├── migrations/     # 001_schema.sql (extracted from schema.md)
+│   └── seeds/          # seed.sql (extracted from seed.md)
 ├── docker-compose.yml  # PostgreSQL
 └── .env.example
 ```
 
-## Menjalankan Proyek
+## Running the Project
 
 ```bash
-cp .env.example .env          # sesuaikan bila perlu
-docker compose up -d          # nyalakan PostgreSQL
+cp .env.example .env          # adjust if needed
+docker compose up -d          # start PostgreSQL
 
-# Migrasi + seed
+# Migrations + seed
 cat database/migrations/001_schema.sql | docker exec -i synclab-postgres psql -U synclab -d synclab
 cat database/seeds/seed.sql            | docker exec -i synclab-postgres psql -U synclab -d synclab
 
 # Backend (port 12000)
 cd backend && npm install && npm run dev
 
-# Frontend (port 12001, proxy /api -> backend)
+# Frontend (port 12001, proxies /api -> backend)
 cd frontend && npm install && npm run dev
 ```
 
-Kredensial admin hasil seed: `admin@synclab.id` / `SandiAman123!`.
+Seeded admin credentials: `admin@synclab.id` / `SandiAman123!`.
 
-## Keputusan Rekonsiliasi Dokumen (v1)
+## Document Reconciliation Decisions (v1)
 
-- **Baseline skema v1**: `schema.md` + `seed.md` + `apispec.md` (sudah saling konsisten). Skema target penuh ada di `database.md`/`erd.md`.
-- **Status konten v1**: `'draf' | 'terbit' | 'arsip'` (mengikuti schema.md), bukan `draft/scheduled/published/trash` dari PRD.
-- Referensi `desain_database.md` di `agentrules.md` sudah dikoreksi ke `database.md`.
+- **Schema baseline v1**: `schema.md` + `seed.md` + `apispec.md` (mutually consistent). The full target schema lives in `database.md`/`erd.md`.
+- **Content status v1**: `'draft' | 'published' | 'archived'`, not `draft/scheduled/published/trash` from the PRD.
+- The `desain_database.md` reference in `agentrules.md` has been corrected to `database.md`.
 
-### Daftar Migrasi Masa Depan (menuju skema penuh database.md/erd.md)
+### Future Migration List (toward the full database.md/erd.md schema)
 
-1. Tabel RBAC dinamis: `peran`, `hak_akses`, `peran_hak_akses` (middleware `otorisasi` beralih dari kolom `pengguna.peran`).
-2. Tabel `label_tag` + `artikel_label` (tags).
-3. Tabel `revisi` (versioning konten + restore) dan autosave.
-4. Tabel `log_audit` (pencatatan operasi mutating penting).
-5. Tabel `pengalihan` (redirect URL untuk SEO).
-6. `metadata_seo` polimorfik (`tipe_konten` + `id_konten`) menggantikan FK langsung.
-7. Status konten lanjutan: `scheduled` + `trash` (soft delete) sesuai PRD.
+1. Dynamic RBAC tables: `roles`, `permissions`, `role_permissions` (the authorization middleware switches from the `users.role` column).
+2. `tags` + `article_tags` tables.
+3. `revisions` table (content versioning + restore) and autosave.
+4. `audit_logs` table (recording important mutating operations).
+5. `redirects` table (URL redirects for SEO).
+6. Polymorphic `seo_metadata` (`content_type` + `content_id`) replacing direct FKs.
+7. Advanced content statuses: `scheduled` + `trash` (soft delete) per the PRD.
+
 ## Deployment (VPS)
 
-Production: http://43.156.102.177 - auto-deploy via GitHub webhook (push ke main -> VPS menjalankan git pull, build frontend, restart PM2).
+Production: http://43.156.102.177 - auto-deploy via GitHub webhook (push to main -> VPS runs git pull, builds the frontend, restarts PM2).
 
-> Webhook endpoint: `http://43.156.102.177:9000/hooks/synclab-deploy` (HMAC-SHA256, hanya event push ke main).
+> Webhook endpoint: `http://43.156.102.177:9000/hooks/synclab-deploy` (HMAC-SHA256, push events to main only).

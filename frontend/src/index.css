@@ -24,25 +24,25 @@
 }
 
 @layer components {
-  .prose-konten h2 {
+  .prose-content h2 {
     @apply mt-8 mb-3 text-2xl font-bold text-slate-900 dark:text-slate-100;
   }
-  .prose-konten h3 {
+  .prose-content h3 {
     @apply mt-6 mb-2 text-xl font-semibold text-slate-900 dark:text-slate-100;
   }
-  .prose-konten p {
+  .prose-content p {
     @apply mb-4 leading-relaxed;
   }
-  .prose-konten ul {
+  .prose-content ul {
     @apply mb-4 list-disc pl-6;
   }
-  .prose-konten ol {
+  .prose-content ol {
     @apply mb-4 list-decimal pl-6;
   }
-  .prose-konten code {
+  .prose-content code {
     @apply rounded bg-surface-container-high px-1 py-0.5 text-sm dark:bg-slate-800;
   }
-  .prose-konten pre {
+  .prose-content pre {
     @apply mb-4 overflow-x-auto rounded-lg bg-slate-900 p-4 text-sm text-slate-100;
   }
 }

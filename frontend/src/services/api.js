@@ -1,41 +1,41 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api/v1';
 
-export function ambilToken() {
+export function getToken() {
   return localStorage.getItem('synclab_token');
 }
 
-export function simpanSesi(token, pengguna) {
+export function saveSession(token, user) {
   localStorage.setItem('synclab_token', token);
-  localStorage.setItem('synclab_pengguna', JSON.stringify(pengguna));
+  localStorage.setItem('synclab_user', JSON.stringify(user));
 }
 
-export function hapusSesi() {
+export function clearSession() {
   localStorage.removeItem('synclab_token');
-  localStorage.removeItem('synclab_pengguna');
+  localStorage.removeItem('synclab_user');
 }
 
-export function ambilPengguna() {
+export function getUser() {
   try {
-    return JSON.parse(localStorage.getItem('synclab_pengguna'));
+    return JSON.parse(localStorage.getItem('synclab_user'));
   } catch {
     return null;
   }
 }
 
-async function minta(jalur, { method = 'GET', body, formData } = {}) {
+async function request(path, { method = 'GET', body, formData } = {}) {
   const headers = {};
-  const token = ambilToken();
+  const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
   if (body !== undefined) headers['Content-Type'] = 'application/json';
 
-  const res = await fetch(`${API_BASE}${jalur}`, {
+  const res = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
     body: formData || (body !== undefined ? JSON.stringify(body) : undefined),
   });
   const json = await res.json().catch(() => null);
   if (!res.ok) {
-    const err = new Error(json?.pesan || `Permintaan gagal (${res.status})`);
+    const err = new Error(json?.message || `Request failed (${res.status})`);
     err.status = res.status;
     err.data = json?.data;
     throw err;
@@ -44,9 +44,9 @@ async function minta(jalur, { method = 'GET', body, formData } = {}) {
 }
 
 export const api = {
-  get: (jalur) => minta(jalur),
-  post: (jalur, body) => minta(jalur, { method: 'POST', body }),
-  put: (jalur, body) => minta(jalur, { method: 'PUT', body }),
-  del: (jalur) => minta(jalur, { method: 'DELETE' }),
-  unggah: (jalur, formData) => minta(jalur, { method: 'POST', formData }),
+  get: (path) => request(path),
+  post: (path, body) => request(path, { method: 'POST', body }),
+  put: (path, body) => request(path, { method: 'PUT', body }),
+  del: (path) => request(path, { method: 'DELETE' }),
+  upload: (path, formData) => request(path, { method: 'POST', formData }),
 };

@@ -1,87 +1,87 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
-import { kueri } from '../../database/pool.js';
+import { query } from '../../database/pool.js';
 import { config } from '../../config.js';
 
-// Varian responsive (webp) yang dibuat saat unggah gambar.
-// URL berbentuk <nama>-w<lebar>.webp sehingga frontend dapat memilih ukuran
-// terdekat tanpa query tambahan, dan CDN dapat me-cache tiap varian permanen.
-const VARIAN = { thumbnail: 400, small: 800, medium: 1280, large: 1920 };
+// Responsive (webp) variants generated on image upload.
+// URLs look like <name>-w<width>.webp so the frontend can pick the nearest size
+// without extra queries, and a CDN can cache each variant permanently.
+const VARIANTSTS = { thumbnail: 400, small: 800, medium: 1280, large: 1920 };
 
-async function buatVarian(berkas) {
-  if (!berkas.mimetype.startsWith('image/') || berkas.mimetype === 'image/svg+xml') {
-    return { lebar: null, tinggi: null, varian: {} };
+async function buildVariants(file) {
+  if (!file.mimetype.startsWith('image/') || file.mimetype === 'image/svg+xml') {
+    return { width: null, height: null, variants: {} };
   }
-  const lokasiAsli = path.join(config.uploadDir, berkas.filename);
-  const dasar = berkas.filename.replace(/\.[^.]+$/, '');
-  const gambar = sharp(lokasiAsli, { failOn: 'none' }).rotate();
-  const meta = await gambar.metadata();
-  const varian = {};
+  const originalPath = path.join(config.uploadDir, file.filename);
+  const base = file.filename.replace(/\.[^.]+$/, '');
+  const image = sharp(originalPath, { failOn: 'none' }).rotate();
+  const meta = await image.metadata();
+  const variants = {};
   await Promise.all(
-    Object.entries(VARIAN).map(async ([nama, lebar]) => {
-      if (meta.width && meta.width <= lebar) return;
-      const namaBerkas = `${dasar}-w${lebar}.webp`;
-      await sharp(lokasiAsli, { failOn: 'none' })
+    Object.entries(VARIANTSTS).map(async ([name, width]) => {
+      if (meta.width && meta.width <= width) return;
+      const variantFileName = `${base}-w${width}.webp`;
+      await sharp(originalPath, { failOn: 'none' })
         .rotate()
-        .resize({ width: lebar, withoutEnlargement: true })
+        .resize({ width: width, withoutEnlargement: true })
         .webp({ quality: 78 })
-        .toFile(path.join(config.uploadDir, namaBerkas));
-      varian[nama] = `/uploads/${namaBerkas}`;
+        .toFile(path.join(config.uploadDir, variantFileName));
+      variants[name] = `/uploads/${variantFileName}`;
     })
   );
-  return { lebar: meta.width ?? null, tinggi: meta.height ?? null, varian };
+  return { width: meta.width ?? null, height: meta.height ?? null, variants };
 }
 
-export async function daftar() {
-  const { rows } = await kueri(
-    `SELECT m.id, m.nama_berkas, m.url, m.tipe_mime, m.ukuran_berkas, m.dibuat_pada,
-            p.nama_lengkap AS nama_pengunggah
+export async function list() {
+  const { rows } = await query(
+    `SELECT m.id, m.file_name, m.url, m.mime_type, m.file_size, m.created_at,
+            p.full_name AS uploader_name
      FROM media m
-     LEFT JOIN pengguna p ON p.id = m.id_pengunggah
-     ORDER BY m.dibuat_pada DESC`
+     LEFT JOIN users p ON p.id = m.uploader_id
+     ORDER BY m.created_at DESC`
   );
   return rows;
 }
 
-export async function detail(id) {
-  const { rows } = await kueri(
-    `SELECT m.id, m.nama_berkas, m.url, m.tipe_mime, m.ukuran_berkas, m.dibuat_pada,
-            p.nama_lengkap AS nama_pengunggah
+export async function getById(id) {
+  const { rows } = await query(
+    `SELECT m.id, m.file_name, m.url, m.mime_type, m.file_size, m.created_at,
+            p.full_name AS uploader_name
      FROM media m
-     LEFT JOIN pengguna p ON p.id = m.id_pengunggah
+     LEFT JOIN users p ON p.id = m.uploader_id
      WHERE m.id = $1`,
     [id]
   );
   return rows[0] || null;
 }
 
-export async function simpan(berkas, idPengunggah) {
-  const url = `/uploads/${berkas.filename}`;
-  const { lebar, tinggi, varian } = await buatVarian(berkas).catch(() => ({
-    lebar: null,
-    tinggi: null,
-    varian: {},
+export async function save(file, uploaderId) {
+  const url = `/uploads/${file.filename}`;
+  const { width, height, variants } = await buildVariants(file).catch(() => ({
+    width: null,
+    height: null,
+    variants: {},
   }));
-  const { rows } = await kueri(
-    `INSERT INTO media (nama_berkas, url, tipe_mime, ukuran_berkas, id_pengunggah, lebar, tinggi, varian)
+  const { rows } = await query(
+    `INSERT INTO media (file_name, url, mime_type, file_size, uploader_id, width, height, variants)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id, nama_berkas, url, tipe_mime, ukuran_berkas, lebar, tinggi, varian, dibuat_pada`,
-    [berkas.originalname, url, berkas.mimetype, berkas.size, idPengunggah, lebar, tinggi, JSON.stringify(varian)]
+     RETURNING id, file_name, url, mime_type, file_size, width, height, variants, created_at`,
+    [file.originalname, url, file.mimetype, file.size, uploaderId, width, height, JSON.stringify(variants)]
   );
   return rows[0];
 }
 
-export async function hapus(id) {
-  const media = await detail(id);
+export async function remove(id) {
+  const media = await getById(id);
   if (!media) return null;
-  await kueri('DELETE FROM media WHERE id = $1', [id]);
+  await query('DELETE FROM media WHERE id = $1', [id]);
   if (media.url.startsWith('/uploads/')) {
-    const dasar = path.basename(media.url).replace(/\.[^.]+$/, '');
-    const berkasTerkait = await fs.readdir(config.uploadDir).catch(() => []);
+    const base = path.basename(media.url).replace(/\.[^.]+$/, '');
+    const relatedFiles = await fs.readdir(config.uploadDir).catch(() => []);
     await Promise.all(
-      berkasTerkait
-        .filter((b) => b === path.basename(media.url) || b.startsWith(`${dasar}-w`))
+      relatedFiles
+        .filter((b) => b === path.basename(media.url) || b.startsWith(`${base}-w`))
         .map((b) => fs.unlink(path.join(config.uploadDir, b)).catch(() => {}))
     );
   }

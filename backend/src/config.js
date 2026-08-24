@@ -12,8 +12,8 @@ export const config = {
     process.env.DATABASE_URL ||
     'postgresql://synclab:synclab@localhost:5432/synclab',
   jwtSecret:
-    process.env.JWT_SECRET || 'dev-secret-synclab-jangan-dipakai-di-produksi',
-  jwtKedaluwarsa: process.env.JWT_KEDALUWARSA || '1d',
+    process.env.JWT_SECRET || 'dev-secret-synclab-do-not-use-in-production',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
   uploadDir: path.resolve(__dirname, '..', process.env.UPLOAD_DIR || 'uploads'),
-  maksUkuranBerkas: Number(process.env.MAKS_UKURAN_BERKAS || 5 * 1024 * 1024),
+  maxFileSize: Number(process.env.MAX_FILE_SIZE || 5 * 1024 * 1024),
 };

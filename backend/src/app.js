@@ -5,7 +5,7 @@ import compression from 'compression';
 import fs from 'node:fs';
 import { config } from './config.js';
 import router from './routes/index.js';
-import { penangananError, tidakDitemukan } from './middleware/errorHandler.js';
+import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 fs.mkdirSync(config.uploadDir, { recursive: true });
 
@@ -16,35 +16,35 @@ app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-// Observabilitas ringan: durasi tiap request via Server-Timing + log yang lambat.
-const BATAS_API_LAMBAT_MS = Number(process.env.API_SLOW_MS || 500);
+// Lightweight observability: per-request duration via Server-Timing + slow request logs.
+const SLOW_API_MS = Number(process.env.API_SLOW_MS || 500);
 app.use((req, res, next) => {
-  const mulai = performance.now();
-  const tulisHeadAsli = res.writeHead.bind(res);
+  const start = performance.now();
+  const originalWriteHead = res.writeHead.bind(res);
   res.writeHead = (...args) => {
     if (!res.headersSent) {
-      res.setHeader('Server-Timing', `app;dur=${(performance.now() - mulai).toFixed(1)}`);
+      res.setHeader('Server-Timing', `app;dur=${(performance.now() - start).toFixed(1)}`);
     }
-    return tulisHeadAsli(...args);
+    return originalWriteHead(...args);
   };
   res.on('finish', () => {
-    const durasi = performance.now() - mulai;
-    if (durasi >= BATAS_API_LAMBAT_MS) {
-      console.warn(`[api] lambat ${durasi.toFixed(0)}ms ${req.method} ${req.originalUrl} -> ${res.statusCode}`);
+    const duration = performance.now() - start;
+    if (duration >= SLOW_API_MS) {
+      console.warn(`[api] slow ${duration.toFixed(0)}ms ${req.method} ${req.originalUrl} -> ${res.statusCode}`);
     }
   });
   next();
 });
-// Nama berkas unik per unggahan (multer), jadi URL bersifat immutable.
+// File names are unique per upload (multer), so URLs are immutable.
 app.use('/uploads', express.static(config.uploadDir, { maxAge: '365d', immutable: true }));
 
-app.get('/api/kesehatan', (req, res) => {
-  res.json({ sukses: true, pesan: 'Server SYNCLAB CMS berjalan', data: null });
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'SYNCLAB CMS server is running', data: null });
 });
 
 app.use('/api/v1', router);
 
-app.use(tidakDitemukan);
-app.use(penangananError);
+app.use(notFound);
+app.use(errorHandler);
 
 export default app;

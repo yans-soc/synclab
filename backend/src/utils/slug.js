@@ -1,5 +1,5 @@
-export function buatSlug(teks) {
-  return teks
+export function makeSlug(text) {
+  return text
     .toString()
     .toLowerCase()
     .normalize('NFKD')

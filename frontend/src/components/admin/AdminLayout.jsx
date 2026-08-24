@@ -3,23 +3,23 @@ import { useAuth } from '../../stores/AuthContext.jsx';
 import ThemeToggle from '../layout/ThemeToggle.jsx';
 
 const NAV = [
-  { ke: '/admin', ikon: 'dashboard', label: 'Dashboard', akhir: true },
-  { ke: '/admin/articles', ikon: 'article', label: 'Articles' },
-  { ke: '/admin/categories', ikon: 'category', label: 'Categories' },
-  { ke: '/admin/media', ikon: 'perm_media', label: 'Media' },
-  { ke: '/admin/homepage', ikon: 'home_app_logo', label: 'Homepage' },
-  { ke: '/admin/menus', ikon: 'menu', label: 'Menus' },
-  { ke: '/admin/settings', ikon: 'settings', label: 'Settings' },
+  { to: '/admin', icon: 'dashboard', label: 'Dashboard', end: true },
+  { to: '/admin/articles', icon: 'article', label: 'Articles' },
+  { to: '/admin/categories', icon: 'category', label: 'Categories' },
+  { to: '/admin/media', icon: 'perm_media', label: 'Media' },
+  { to: '/admin/homepage', icon: 'home_app_logo', label: 'Homepage' },
+  { to: '/admin/menus', icon: 'menu', label: 'Menus' },
+  { to: '/admin/settings', icon: 'settings', label: 'Settings' },
 ];
 
 export default function AdminLayout() {
-  const { pengguna, keluar } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  if (!pengguna) return <Navigate to="/admin/login" replace />;
+  if (!user) return <Navigate to="/admin/login" replace />;
 
-  async function prosesKeluar() {
-    await keluar();
+  async function handleSignOut() {
+    await signOut();
     navigate('/admin/login');
   }
 
@@ -35,9 +35,9 @@ export default function AdminLayout() {
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {NAV.map((n) => (
             <NavLink
-              key={n.ke}
-              to={n.ke}
-              end={n.akhir}
+              key={n.to}
+              to={n.to}
+              end={n.end}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                   isActive
@@ -46,7 +46,7 @@ export default function AdminLayout() {
                 }`
               }
             >
-              <span className="material-symbols-outlined text-xl">{n.ikon}</span>
+              <span className="material-symbols-outlined text-xl">{n.icon}</span>
               {n.label}
             </NavLink>
           ))}
@@ -57,7 +57,7 @@ export default function AdminLayout() {
             className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-surface-container dark:hover:bg-slate-800"
           >
             <span className="material-symbols-outlined text-xl">public</span>
-            Lihat Situs
+            View Site
           </a>
         </div>
       </aside>
@@ -68,14 +68,14 @@ export default function AdminLayout() {
             <ThemeToggle />
             <div className="text-right">
               <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                {pengguna.nama_lengkap}
+                {user.full_name}
               </p>
-              <p className="text-xs capitalize text-slate-400">{pengguna.peran}</p>
+              <p className="text-xs capitalize text-slate-400">{user.role}</p>
             </div>
             <button
-              onClick={prosesKeluar}
+              onClick={handleSignOut}
               className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
-              title="Keluar"
+              title="Sign Out"
             >
               <span className="material-symbols-outlined">logout</span>
             </button>

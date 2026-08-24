@@ -1,36 +1,36 @@
--- 1. SEED PENGGUNA (Admin Master & Penulis)
-INSERT INTO pengguna (id, nama_lengkap, surel, kata_sandi, peran, aktif)
-VALUES 
+-- 1. SEED USERS (Master Admin & Author)
+INSERT INTO users (id, full_name, email, password, role, active)
+VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Admin SYNCLAB', 'admin@synclab.id', '$2a$10$6aB2LOxUFQdA0uGkCUUG0e/umsOIbvy2iFW5.PNA3MjniSpBfpqge', 'admin', TRUE),
-('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Rian Febrian', 'rian@synclab.id', '$2a$10$6aB2LOxUFQdA0uGkCUUG0e/umsOIbvy2iFW5.PNA3MjniSpBfpqge', 'penulis', TRUE);
+('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Rian Febrian', 'rian@synclab.id', '$2a$10$6aB2LOxUFQdA0uGkCUUG0e/umsOIbvy2iFW5.PNA3MjniSpBfpqge', 'author', TRUE);
 
--- 2. SEED KATEGORI
-INSERT INTO kategori (id, nama, slug, deskripsi, warna, ikon)
-VALUES 
-('c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', 'web-dev', 'Frontend & Backend modern tech stack', 'primary', 'code'),
-('c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Linux', 'linux', 'Sistem operasi, Kernel, & Shell Scripting', 'secondary', 'terminal'),
-('c3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'Network', 'network', 'Jaringan, Keamanan, & Protokol', 'tertiary', 'hub'),
-('c4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'AI & Data', 'ai-data', 'Machine Learning & Rekayasa Data', 'ai-purple', 'psychology');
+-- 2. SEED CATEGORIES
+INSERT INTO categories (id, name, slug, description, color, icon)
+VALUES
+('c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', 'web-dev', 'Modern frontend & backend tech stack', 'primary', 'code'),
+('c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Linux', 'linux', 'Operating systems, kernel, & shell scripting', 'secondary', 'terminal'),
+('c3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'Network', 'network', 'Networking, security, & protocols', 'tertiary', 'hub'),
+('c4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'AI & Data', 'ai-data', 'Machine learning & data engineering', 'ai-purple', 'psychology');
 
 -- 3. SEED MEDIA
-INSERT INTO media (id, nama_berkas, url, tipe_mime, ukuran_berkas, id_pengunggah)
-VALUES 
+INSERT INTO media (id, file_name, url, mime_type, file_size, uploader_id)
+VALUES
 ('91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'api_architecture.jpg', 'https://images.unsplash.com/photo-1555066931-4365d14bab8c', 'image/jpeg', 245000, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 ('92eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'linux_kernel.jpg', 'https://images.unsplash.com/photo-1629654297299-c8506221ca97', 'image/jpeg', 312000, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
 ('93eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'mesh_network.jpg', 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8', 'image/jpeg', 189000, 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11');
 
--- 4. SEED ARTIKEL
-INSERT INTO artikel (id, judul, slug, kutipan, konten, status, id_penulis, id_gambar_unggulan, diterbitkan_pada)
-VALUES 
+-- 4. SEED ARTICLES
+INSERT INTO articles (id, title, slug, excerpt, content, status, author_id, featured_image_id, published_at)
+VALUES
 (
   'd1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
   'Building Scalable APIs with Node.js & PostgreSQL',
   'building-scalable-apis-nodejs-postgresql',
-  'Pelajari cara merancang arsitektur API yang tangguh, aman, dan berkinerja tinggi menggunakan Node.js dan PostgreSQL.',
-  '## Pendahuluan
+  'Learn how to design robust, secure, and high-performance API architectures using Node.js and PostgreSQL.',
+  '## Introduction
 
-Dalam era aplikasi web modern...',
-  'terbit',
+In the era of modern web applications...',
+  'published',
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   '91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
   CURRENT_TIMESTAMP - INTERVAL '2 days'
@@ -39,11 +39,11 @@ Dalam era aplikasi web modern...',
   'd2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
   'Understanding Linux Kernel Memory Management',
   'understanding-linux-kernel-memory-management',
-  'Panduan mendalam tentang bagaimana kernel Linux mengelola RAM, alokasi halaman, dan virtual memory.',
-  '## Pengenalan Memory Management
+  'A deep dive into how the Linux kernel manages RAM, page allocation, and virtual memory.',
+  '## Introduction to Memory Management
 
-Kernel Linux menggunakan...',
-  'terbit',
+The Linux kernel uses...',
+  'published',
   'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
   '92eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
   CURRENT_TIMESTAMP - INTERVAL '5 days'
@@ -52,11 +52,11 @@ Kernel Linux menggunakan...',
   'd3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   'Designing High-Performance Mesh Networks',
   'designing-high-performance-mesh-networks',
-  'Konsep dasar dan implementasi praktis arsitektur jaringan mesh untuk redundansi dan throughput maksimal.',
-  '## Arsitektur Mesh Network
+  'Core concepts and practical implementation of mesh network architectures for redundancy and maximum throughput.',
+  '## Mesh Network Architecture
 
-Jaringan mesh menawarkan...',
-  'terbit',
+Mesh networks offer...',
+  'published',
   'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
   '93eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   CURRENT_TIMESTAMP - INTERVAL '7 days'
@@ -65,45 +65,45 @@ Jaringan mesh menawarkan...',
   'd4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04',
   'Getting Started with Docker & Containerization',
   'getting-started-with-docker-containerization',
-  'Panduan praktis membangun, menjalankan, dan mengorkestrasi container Docker untuk lingkungan pengembangan dan produksi.',
-  '## Mengapa Container?
+  'A practical guide to building, running, and orchestrating Docker containers for development and production environments.',
+  '## Why Containers?
 
-Container mengemas aplikasi beserta dependensinya...',
-  'terbit',
+Containers package applications with their dependencies...',
+  'published',
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   '91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
   CURRENT_TIMESTAMP - INTERVAL '3 days'
 ),
 (
   'd5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05',
-  'Modern CSS: Grid, Flexbox, dan Container Queries',
+  'Modern CSS: Grid, Flexbox, and Container Queries',
   'modern-css-grid-flexbox-container-queries',
-  'Kuasai teknik layout CSS modern untuk membangun antarmuka yang responsif tanpa media query yang rumit.',
-  '## Evolusi Layout CSS
+  'Master modern CSS layout techniques to build responsive interfaces without complex media queries.',
+  '## The Evolution of CSS Layout
 
-CSS Grid dan Flexbox mengubah cara kita...',
-  'terbit',
+CSS Grid and Flexbox changed the way we...',
+  'published',
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   '92eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
   CURRENT_TIMESTAMP - INTERVAL '4 days'
 ),
 (
   'd6eebc99-9c0b-4ef8-bb6d-6bb9bd380a06',
-  'Pengantar Machine Learning untuk Developer',
-  'pengantar-machine-learning-untuk-developer',
-  'Konsep fundamental machine learning, dari regresi hingga neural network, dengan contoh kode Python yang langsung bisa dijalankan.',
-  '## Apa itu Machine Learning?
+  'Introduction to Machine Learning for Developers',
+  'introduction-to-machine-learning-for-developers',
+  'Fundamental machine learning concepts, from regression to neural networks, with Python examples you can run right away.',
+  '## What is Machine Learning?
 
-Machine learning memungkinkan komputer...',
-  'terbit',
+Machine learning lets computers...',
+  'published',
   'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
   '93eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   CURRENT_TIMESTAMP - INTERVAL '6 days'
 );
 
--- 5. RELASI ARTIKEL DAN KATEGORI
-INSERT INTO artikel_kategori (id_artikel, id_kategori)
-VALUES 
+-- 5. ARTICLE-CATEGORY RELATIONS
+INSERT INTO article_categories (article_id, category_id)
+VALUES
 ('d1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'),
 ('d2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02'),
 ('d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'c3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03'),
@@ -111,27 +111,27 @@ VALUES
 ('d5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', 'c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01'),
 ('d6eebc99-9c0b-4ef8-bb6d-6bb9bd380a06', 'c4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04');
 
--- 6. SEED BERANDA MASTER
-INSERT INTO beranda (id, judul, versi, aktif)
-VALUES 
-('e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Tampilan Utama V1 SYNCLAB', 1, TRUE);
+-- 6. SEED MASTER HOMEPAGE
+INSERT INTO homepages (id, title, version, active)
+VALUES
+('e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'SYNCLAB Main Layout V1', 1, TRUE);
 
--- 7. SEED BAGIAN BERANDA (Homepage Builder Sections)
-INSERT INTO bagian_beranda (id, id_beranda, judul_bagian, tipe, posisi, pengaturan, aktif)
-VALUES 
+-- 7. SEED HOMEPAGE SECTIONS (Homepage Builder Sections)
+INSERT INTO homepage_sections (id, homepage_id, section_title, type, position, settings, active)
+VALUES
 (
   'f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
   'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
-  'Hero Section Utama',
+  'Main Hero Section',
   'hero_section',
   1,
   '{
-    "judul_utama": "Master the Tech Stack of Tomorrow",
-    "deskripsi": "Dive deep into high-quality programming tutorials designed for developers and systems architects. Build precision, ensure clarity, and understand what is under the hood.",
+    "main_title": "Master the Tech Stack of Tomorrow",
+    "description": "Dive deep into high-quality programming tutorials designed for developers and systems architects. Build precision, ensure clarity, and understand what is under the hood.",
     "cta": {
-      "teks_tombol": "Start Learning",
-      "url_tujuan": "/tutorials",
-      "ikon": "arrow_forward"
+      "button_text": "Start Learning",
+      "target_url": "/tutorials",
+      "icon": "arrow_forward"
     }
   }'::jsonb,
   TRUE
@@ -139,46 +139,46 @@ VALUES
 (
   'f2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
   'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
-  'Grid Explore Topics',
+  'Explore Topics Grid',
   'explore_topics',
   2,
   '{
-    "subjudul": "Curated Knowledge Base",
-    "judul_seksi": "Explore Topics"
+    "subtitle": "Curated Knowledge Base",
+    "section_title": "Explore Topics"
   }'::jsonb,
   TRUE
 ),
 (
   'f4eebc99-9c0b-4ef8-bb6d-6bb9bd380a04',
   'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
-  'Daftar Artikel Trending',
+  'Trending Articles List',
   'trending_articles',
   3,
   '{
-    "subjudul": "Paling Banyak Dibaca",
-    "judul_seksi": "Trending Articles",
-    "jumlah_tampil": 6,
-    "teks_tautan": "View All Posts"
+    "subtitle": "Most Read",
+    "section_title": "Trending Articles",
+    "display_count": 6,
+    "link_text": "View All Posts"
   }'::jsonb,
   TRUE
 ),
 (
   'f3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03',
   'e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
-  'Daftar Artikel Terbaru',
+  'Latest Articles List',
   'latest_articles',
   4,
   '{
-    "judul_seksi": "Latest Articles",
-    "jumlah_tampil": 6,
-    "teks_tautan": "View All Posts"
+    "section_title": "Latest Articles",
+    "display_count": 6,
+    "link_text": "View All Posts"
   }'::jsonb,
   TRUE
 );
 
--- 8. SEED KUNJUNGAN AWAL (data awal agar trending tidak kosong;
---    selanjutnya data diisi realtime oleh sistem saat pengunjung membaca)
-INSERT INTO kunjungan_artikel (id_artikel, dikunjungi_pada)
+-- 8. SEED INITIAL VISITS (seed data so trending is not empty;
+--    afterwards data is filled in realtime as visitors read)
+INSERT INTO article_visits (article_id, visited_at)
 SELECT d.id, now() - (random() * INTERVAL '7 days')
 FROM (
   VALUES
@@ -188,36 +188,36 @@ FROM (
     ('d5eebc99-9c0b-4ef8-bb6d-6bb9bd380a05'::uuid, 19),
     ('d2eebc99-9c0b-4ef8-bb6d-6bb9bd380a02'::uuid, 12),
     ('d3eebc99-9c0b-4ef8-bb6d-6bb9bd380a03'::uuid, 7)
-) AS d(id, jumlah)
-CROSS JOIN generate_series(1, d.jumlah);
+) AS d(id, total)
+CROSS JOIN generate_series(1, d.total);
 
--- 9. SEED MENU NAVIGASI
-INSERT INTO menu (id, nama, lokasi)
-VALUES 
+-- 9. SEED NAVIGATION MENUS
+INSERT INTO menus (id, name, location)
+VALUES
 ('71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Header Navigation', 'header'),
 ('72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Footer Navigation', 'footer');
 
-INSERT INTO item_menu (id, id_menu, label, url, posisi)
-VALUES 
-('81eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', '/kategori/web-dev', 1),
-('82eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Linux', '/kategori/linux', 2),
-('83eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Network', '/kategori/network', 3),
-('84eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Documentation', '/halaman/documentation', 1),
-('85eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'API Terms', '/halaman/api-terms', 2);
+INSERT INTO menu_items (id, menu_id, label, url, position)
+VALUES
+('81eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', '/category/web-dev', 1),
+('82eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Linux', '/category/linux', 2),
+('83eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Network', '/category/network', 3),
+('84eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Documentation', '/page/documentation', 1),
+('85eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'API Terms', '/page/api-terms', 2);
 
--- 9. SEED PENGATURAN GLOBAL
-INSERT INTO pengaturan_global (kunci, nilai, deskripsi, tipe_data)
-VALUES 
-('judul_situs', 'SYNCLAB', 'Nama utama platform / website', 'string'),
-('deskripsi_situs', 'High-Quality Programming & System Engineering Tutorials', 'Slogan dan deskripsi default platform', 'string'),
-('surel_kontak', 'contact@synclab.id', 'Alamat surel kontak resmi', 'string');
+-- 10. SEED GLOBAL SETTINGS
+INSERT INTO global_settings (key, value, description, data_type)
+VALUES
+('site_title', 'SYNCLAB', 'Main platform / website name', 'string'),
+('site_description', 'High-Quality Programming & System Engineering Tutorials', 'Default platform slogan and description', 'string'),
+('contact_email', 'contact@synclab.id', 'Official contact email address', 'string');
 
--- 9. SINKRONISASI COUNTER OTORITATIF dari data kunjungan awal di atas
-UPDATE artikel a SET jumlah_dilihat = sub.total
+-- 11. SYNC THE AUTHORITATIVE COUNTER from the seed visit data above
+UPDATE articles a SET view_count = sub.total
 FROM (
-  SELECT id_artikel, COUNT(*)::int AS total
-  FROM kunjungan_artikel
-  WHERE sah = TRUE
-  GROUP BY id_artikel
+  SELECT article_id, COUNT(*)::int AS total
+  FROM article_visits
+  WHERE valid = TRUE
+  GROUP BY article_id
 ) sub
-WHERE a.id = sub.id_artikel;
+WHERE a.id = sub.article_id;

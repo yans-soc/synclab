@@ -1,161 +1,161 @@
--- Ekstensi PostgreSQL untuk UUID
+-- PostgreSQL extension for UUIDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. TABEL PENGGUNA
-CREATE TABLE pengguna (
+-- 1. USERS TABLE
+CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nama_lengkap VARCHAR(150) NOT NULL,
-    surel VARCHAR(255) UNIQUE NOT NULL,
-    kata_sandi VARCHAR(255) NOT NULL,
-    peran VARCHAR(50) NOT NULL DEFAULT 'penulis' CHECK (peran IN ('admin', 'editor', 'penulis')),
-    foto_profil VARCHAR(500),
-    aktif BOOLEAN NOT NULL DEFAULT TRUE,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'author' CHECK (role IN ('admin', 'editor', 'author')),
+    profile_photo VARCHAR(500),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. TABEL KATEGORI
-CREATE TABLE kategori (
+-- 2. CATEGORIES TABLE
+CREATE TABLE categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nama VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     slug VARCHAR(120) UNIQUE NOT NULL,
-    deskripsi TEXT,
-    warna VARCHAR(30) DEFAULT 'primary',
-    ikon VARCHAR(100) DEFAULT 'folder',
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    description TEXT,
+    color VARCHAR(30) DEFAULT 'primary',
+    icon VARCHAR(100) DEFAULT 'folder',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. TABEL MEDIA
+-- 3. MEDIA TABLE
 CREATE TABLE media (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nama_berkas VARCHAR(255) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
     url VARCHAR(500) NOT NULL,
-    tipe_mime VARCHAR(100) NOT NULL,
-    ukuran_berkas BIGINT NOT NULL,
-    id_pengunggah UUID REFERENCES pengguna(id) ON DELETE SET NULL,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    mime_type VARCHAR(100) NOT NULL,
+    file_size BIGINT NOT NULL,
+    uploader_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. TABEL ARTIKEL
-CREATE TABLE artikel (
+-- 4. ARTICLES TABLE
+CREATE TABLE articles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    judul VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     slug VARCHAR(280) UNIQUE NOT NULL,
-    kutipan TEXT,
-    konten TEXT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'draf' CHECK (status IN ('draf', 'terbit', 'arsip')),
-    id_penulis UUID NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
-    id_gambar_unggulan UUID REFERENCES media(id) ON DELETE SET NULL,
-    diterbitkan_pada TIMESTAMP WITH TIME ZONE,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    excerpt TEXT,
+    content TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+    author_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    featured_image_id UUID REFERENCES media(id) ON DELETE SET NULL,
+    published_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. TABEL RELASI ARTIKEL - KATEGORI (Junction Table)
-CREATE TABLE artikel_kategori (
-    id_artikel UUID REFERENCES artikel(id) ON DELETE CASCADE,
-    id_kategori UUID REFERENCES kategori(id) ON DELETE CASCADE,
-    PRIMARY KEY (id_artikel, id_kategori)
+-- 5. ARTICLE-CATEGORY RELATION TABLE (Junction Table)
+CREATE TABLE article_categories (
+    article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
+    category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
+    PRIMARY KEY (article_id, category_id)
 );
 
--- 6. TABEL BERANDA (Homepage Builder Master)
-CREATE TABLE beranda (
+-- 6. HOMEPAGES TABLE (Homepage Builder Master)
+CREATE TABLE homepages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    judul VARCHAR(150) NOT NULL,
-    versi INTEGER NOT NULL DEFAULT 1,
-    aktif BOOLEAN NOT NULL DEFAULT FALSE,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    title VARCHAR(150) NOT NULL,
+    version INTEGER NOT NULL DEFAULT 1,
+    active BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 7. TABEL BAGIAN BERANDA (Homepage Sections)
-CREATE TABLE bagian_beranda (
+-- 7. HOMEPAGE SECTIONS TABLE (Homepage Builder Sections)
+CREATE TABLE homepage_sections (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    id_beranda UUID NOT NULL REFERENCES beranda(id) ON DELETE CASCADE,
-    judul_bagian VARCHAR(150) NOT NULL,
-    tipe VARCHAR(50) NOT NULL, -- e.g. 'hero_section', 'explore_topics', 'latest_articles', 'cta_banner'
-    posisi INTEGER NOT NULL DEFAULT 0,
-    pengaturan JSONB NOT NULL DEFAULT '{}'::jsonb,
-    aktif BOOLEAN NOT NULL DEFAULT TRUE,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    homepage_id UUID NOT NULL REFERENCES homepages(id) ON DELETE CASCADE,
+    section_title VARCHAR(150) NOT NULL,
+    type VARCHAR(50) NOT NULL, -- e.g. 'hero_section', 'explore_topics', 'latest_articles', 'cta_banner'
+    position INTEGER NOT NULL DEFAULT 0,
+    settings JSONB NOT NULL DEFAULT '{}'::jsonb,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 8. TABEL HALAMAN STATIS
-CREATE TABLE halaman (
+-- 8. STATIC PAGES TABLE
+CREATE TABLE pages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    judul VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
     slug VARCHAR(280) UNIQUE NOT NULL,
-    konten TEXT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'draf' CHECK (status IN ('draf', 'terbit')),
-    id_penulis UUID NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    content TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+    author_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 9. TABEL METADATA SEO
-CREATE TABLE metadata_seo (
+-- 9. SEO METADATA TABLE
+CREATE TABLE seo_metadata (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    id_artikel UUID UNIQUE REFERENCES artikel(id) ON DELETE CASCADE,
-    id_halaman UUID UNIQUE REFERENCES halaman(id) ON DELETE CASCADE,
-    judul_seo VARCHAR(150),
-    deskripsi_seo TEXT,
-    kata_kunci VARCHAR(255),
-    url_kanonis VARCHAR(500),
-    gambar_og VARCHAR(500)
+    article_id UUID UNIQUE REFERENCES articles(id) ON DELETE CASCADE,
+    page_id UUID UNIQUE REFERENCES pages(id) ON DELETE CASCADE,
+    seo_title VARCHAR(150),
+    seo_description TEXT,
+    seo_keywords VARCHAR(255),
+    canonical_url VARCHAR(500),
+    og_image VARCHAR(500)
 );
 
--- 10. TABEL MENU NAVIGASI
-CREATE TABLE menu (
+-- 10. NAVIGATION MENUS TABLE
+CREATE TABLE menus (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nama VARCHAR(100) NOT NULL,
-    lokasi VARCHAR(50) NOT NULL UNIQUE, -- e.g. 'header', 'footer'
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(50) NOT NULL UNIQUE, -- e.g. 'header', 'footer'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 11. TABEL ITEM MENU NAVIGASI
-CREATE TABLE item_menu (
+-- 11. NAVIGATION MENU ITEMS TABLE
+CREATE TABLE menu_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    id_menu UUID NOT NULL REFERENCES menu(id) ON DELETE CASCADE,
-    id_induk UUID REFERENCES item_menu(id) ON DELETE CASCADE,
+    menu_id UUID NOT NULL REFERENCES menus(id) ON DELETE CASCADE,
+    parent_id UUID REFERENCES menu_items(id) ON DELETE CASCADE,
     label VARCHAR(100) NOT NULL,
     url VARCHAR(500) NOT NULL,
-    posisi INTEGER NOT NULL DEFAULT 0,
-    ikon VARCHAR(100),
-    dibuat_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    position INTEGER NOT NULL DEFAULT 0,
+    icon VARCHAR(100),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 12. TABEL PENGATURAN GLOBAL
-CREATE TABLE pengaturan_global (
+-- 12. GLOBAL SETTINGS TABLE
+CREATE TABLE global_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    kunci VARCHAR(100) UNIQUE NOT NULL,
-    nilai TEXT NOT NULL,
-    deskripsi TEXT,
-    tipe_data VARCHAR(30) DEFAULT 'string' CHECK (tipe_data IN ('string', 'boolean', 'integer', 'json')),
-    diperbarui_pada TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    key VARCHAR(100) UNIQUE NOT NULL,
+    value TEXT NOT NULL,
+    description TEXT,
+    data_type VARCHAR(30) DEFAULT 'string' CHECK (data_type IN ('string', 'boolean', 'integer', 'json')),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- INDEKS UNTUK OPTIMASI QUERY
-CREATE INDEX idx_artikel_slug ON artikel(slug);
-CREATE INDEX idx_artikel_status_tgl ON artikel(status, diterbitkan_pada DESC);
-CREATE INDEX idx_kategori_slug ON kategori(slug);
-CREATE INDEX idx_bagian_beranda_posisi ON bagian_beranda(id_beranda, posisi) WHERE aktif = TRUE;
-CREATE INDEX idx_item_menu_posisi ON item_menu(id_menu, posisi);
+-- INDEXES FOR QUERY OPTIMIZATION
+CREATE INDEX idx_articles_slug ON articles(slug);
+CREATE INDEX idx_articles_status_date ON articles(status, published_at DESC);
+CREATE INDEX idx_categories_slug ON categories(slug);
+CREATE INDEX idx_homepage_sections_position ON homepage_sections(homepage_id, position) WHERE active = TRUE;
+CREATE INDEX idx_menu_items_position ON menu_items(menu_id, position);
 
--- TRIGGER UNTUK OTOMATISASI DIPERBARUI_PADA
-CREATE OR REPLACE FUNCTION perbarui_timestamp()
+-- TRIGGERS TO AUTOMATE UPDATED_AT
+CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.diperbarui_pada = CURRENT_TIMESTAMP;
+    NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_perbarui_pengguna BEFORE UPDATE ON pengguna FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
-CREATE TRIGGER trg_perbarui_kategori BEFORE UPDATE ON kategori FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
-CREATE TRIGGER trg_perbarui_artikel BEFORE UPDATE ON artikel FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
-CREATE TRIGGER trg_perbarui_beranda BEFORE UPDATE ON beranda FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
-CREATE TRIGGER trg_perbarui_bagian_beranda BEFORE UPDATE ON bagian_beranda FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
-CREATE TRIGGER trg_perbarui_halaman BEFORE UPDATE ON halaman FOR EACH ROW EXECUTE FUNCTION perbarui_timestamp();
+CREATE TRIGGER trg_update_users BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_categories BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_articles BEFORE UPDATE ON articles FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_homepages BEFORE UPDATE ON homepages FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_homepage_sections BEFORE UPDATE ON homepage_sections FOR EACH ROW EXECUTE FUNCTION update_timestamp();
+CREATE TRIGGER trg_update_pages BEFORE UPDATE ON pages FOR EACH ROW EXECUTE FUNCTION update_timestamp();

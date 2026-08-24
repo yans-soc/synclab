@@ -1,30 +1,30 @@
-export function hitungWaktuBaca(konten) {
-  const kataPerMenit = 200;
-  const jumlahKata = (konten || '').trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(jumlahKata / kataPerMenit));
+export function readingTimeMinutes(content) {
+  const wordsPerMinute = 200;
+  const wordCount = (content || '').trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 }
 
-export function formatTanggal(iso) {
+export function formatDate(iso) {
   if (!iso) return '';
-  return new Intl.DateTimeFormat('id-ID', {
+  return new Intl.DateTimeFormat('en-US', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   }).format(new Date(iso));
 }
 
-// Satu-satunya formatter view count untuk seluruh frontend.
+// The single view-count formatter for the entire frontend.
 // 999 -> "999", 1250 -> "1.2K", 12840 -> "12.8K", 1200000 -> "1.2M"
 export function formatViewCount(n) {
-  const nilai = Number(n) || 0;
-  if (nilai >= 1000000) return `${(nilai / 1000000).toFixed(1)}M`;
-  if (nilai >= 1000) return `${(nilai / 1000).toFixed(1)}K`;
-  return String(nilai);
+  const value = Number(n) || 0;
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+  if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+  return String(value);
 }
 
-export function formatAngka(n) {
-  const nilai = Number(n) || 0;
-  if (nilai >= 1000000) return `${(nilai / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt`;
-  if (nilai >= 1000) return `${(nilai / 1000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} rb`;
-  return nilai.toLocaleString('id-ID');
+export function formatNumber(n) {
+  const value = Number(n) || 0;
+  if (value >= 1000000) return `${(value / 1000000).toLocaleString('en-US', { maximumFractionDigits: 1 })}M`;
+  if (value >= 1000) return `${(value / 1000).toLocaleString('en-US', { maximumFractionDigits: 1 })}K`;
+  return value.toLocaleString('en-US');
 }

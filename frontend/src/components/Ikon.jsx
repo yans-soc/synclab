@@ -1,7 +1,7 @@
-export default function Ikon({ nama, className = '' }) {
+export default function Icon({ name, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`} aria-hidden="true">
-      {nama}
+      {name}
     </span>
   );
 }

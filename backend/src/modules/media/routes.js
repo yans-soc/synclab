@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import * as controller from './controller.js';
-import { autentikasi, otorisasi } from '../../middleware/autentikasi.js';
+import { authenticate, authorize } from '../../middleware/auth.js';
 
 const router = Router();
 
-router.use(autentikasi);
-router.get('/', controller.daftar);
-router.get('/:id', controller.detail);
-router.post('/unggah', otorisasi('admin', 'editor', 'penulis'), controller.unggahBerkas, controller.unggah);
-router.delete('/:id', otorisasi('admin', 'editor'), controller.hapus);
+router.use(authenticate);
+router.get('/', controller.list);
+router.get('/:id', controller.getById);
+router.post('/upload', authorize('admin', 'editor', 'author'), controller.uploadFile, controller.upload);
+router.delete('/:id', authorize('admin', 'editor'), controller.remove);
 
 export default router;

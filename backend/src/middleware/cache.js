@@ -1,64 +1,64 @@
-import { ambilCache, simpanCache, invalidasiKontenPublik } from '../utils/invalidasi.js';
+import { getCache, setCache, invalidatePublicContent } from '../utils/cache.js';
 
-// Cache in-memory untuk GET publik; dibersihkan otomatis saat ada mutasi admin.
-// Header Cache-Control diset agar respons juga aman di-cache CDN/browser.
+// In-memory cache for public GET requests; cleared automatically on admin mutations.
+// Cache-Control headers are set so responses are also safe to cache in a CDN/browser.
 //
-// Strategi per kategori:
-// - Daftar/statik publik : public, max-age=60, s-maxage=300, stale-while-revalidate=600
-// - Populer              : publik tapi singkat (urutan mendekati realtime)
-// - Detail artikel       : no-store — respons membawa token kunjungan per-pengunjung
-// - Admin/auth           : private, no-store (diset di middleware adminTanpaCache)
-const TANPA_CACHE = /^\/api\/v1\/artikel\/(?!trending(?:[/?]|$))[^/?]+/;
-const HEADER_PUBLIK = 'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
-const HEADER_POPULER = 'public, max-age=15, s-maxage=30, stale-while-revalidate=60';
+// Strategy per category:
+// - Public lists/static : public, max-age=60, s-maxage=300, stale-while-revalidate=600
+// - Popular              : public but short-lived (ordering stays near-realtime)
+// - Article detail       : no-store — respons membawa token visit per-visitor
+// - Admin/auth           : private, no-store (set in the adminNoCache middleware)
+const NO_CACHE = /^\/api\/v1\/articles\/(?!trending(?:[/?]|$))[^/?]+/;
+const HEADER_PUBLIC = 'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
+const HEADER_POPULAR = 'public, max-age=15, s-maxage=30, stale-while-revalidate=60';
 const HEADER_TRENDING = 'public, max-age=30, s-maxage=60, stale-while-revalidate=120';
 const TTL_TRENDING_MS = 60_000;
 
-export function cachePublik(req, res, next) {
+export function publicCache(req, res, next) {
   if (req.method !== 'GET') return next();
-  if (TANPA_CACHE.test(req.originalUrl)) {
-    // Detail artikel: jangan di-cache di lapisan mana pun
-    // (token kunjungan bersifat per-pengunjung).
+  if (NO_CACHE.test(req.originalUrl)) {
+    // Article detail: do not cache at any layer
+    // (visit tokens are per-visitor).
     res.set('Cache-Control', 'no-store');
     return next();
   }
-  if (req.originalUrl.includes('urutkan=populer')) {
-    res.set('Cache-Control', HEADER_POPULER);
+  if (req.originalUrl.includes('sort=popular')) {
+    res.set('Cache-Control', HEADER_POPULAR);
     return next();
   }
-  // Trending & beranda komposit di-cache singkat (60 detik) di aplikasi +
-  // header CDN singkat: agregasi tidak dihitung ulang di setiap request,
-  // namun urutan/counter tetap mendekati realtime dan tak pernah divergen permanen.
-  const trending = /^\/api\/v1\/artikel\/trending/.test(req.originalUrl);
-  const komposit = req.originalUrl.includes('lengkap=1');
+  // Trending & the composite homepage are cached briefly (60 seconds) in the app +
+  // short CDN headers: the aggregation is not recomputed on every request,
+  // yet ordering/counters stay near-realtime and never diverge permanently.
+  const trending = /^\/api\/v1\/articles\/trending/.test(req.originalUrl);
+  const komposit = req.originalUrl.includes('full=1');
   const ttl = trending || komposit ? TTL_TRENDING_MS : null;
-  res.set('Cache-Control', trending ? HEADER_TRENDING : HEADER_PUBLIK);
-  const kunci = req.originalUrl;
-  const entri = ambilCache(kunci);
-  if (entri) {
+  res.set('Cache-Control', trending ? HEADER_TRENDING : HEADER_PUBLIC);
+  const key = req.originalUrl;
+  const entry = getCache(key);
+  if (entry) {
     res.set('X-Cache', 'HIT');
-    return res.status(entri.status).json(entri.body);
+    return res.status(entry.status).json(entry.body);
   }
-  const jsonAsli = res.json.bind(res);
+  const originalJson = res.json.bind(res);
   res.json = (body) => {
     if (res.statusCode < 400) {
-      simpanCache(kunci, { status: res.statusCode, body }, ttl);
+      setCache(key, { status: res.statusCode, body }, ttl);
       res.set('X-Cache', 'MISS');
     }
-    return jsonAsli(body);
+    return originalJson(body);
   };
   next();
 }
 
-export function adminTanpaCache(req, res, next) {
+export function adminNoCache(req, res, next) {
   res.set('Cache-Control', 'private, no-store');
   next();
 }
 
-export function invalidasiCache(req, res, next) {
+export function invalidateCache(req, res, next) {
   res.on('finish', () => {
     if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) && res.statusCode < 400) {
-      invalidasiKontenPublik();
+      invalidatePublicContent();
     }
   });
   next();

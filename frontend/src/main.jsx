@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 
-if (localStorage.getItem('synclab_tema') === 'gelap') {
+if (localStorage.getItem('synclab_theme') === 'dark') {
   document.documentElement.classList.add('dark');
 }
 

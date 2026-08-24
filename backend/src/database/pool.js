@@ -3,36 +3,36 @@ import { config } from '../config.js';
 
 const { Pool } = pg;
 
-const BATAS_KUERI_LAMBAT_MS = Number(process.env.DB_SLOW_QUERY_MS || 150);
+const SLOW_QUERY_MS = Number(process.env.DB_SLOW_QUERY_MS || 150);
 
 export const pool = new Pool({
   connectionString: config.databaseUrl,
   max: 10,
 });
 
-export async function kueri(teks, params) {
-  const mulai = performance.now();
-  const hasil = await pool.query(teks, params);
-  const durasi = performance.now() - mulai;
-  if (durasi >= BATAS_KUERI_LAMBAT_MS) {
+export async function query(text, params) {
+  const start = performance.now();
+  const result = await pool.query(text, params);
+  const duration = performance.now() - start;
+  if (duration >= SLOW_QUERY_MS) {
     console.warn(
-      `[db] kueri lambat ${durasi.toFixed(0)}ms: ${teks.replace(/\s+/g, ' ').slice(0, 120)}`
+      `[db] slow query ${duration.toFixed(0)}ms: ${text.replace(/\s+/g, ' ').slice(0, 120)}`
     );
   }
-  return hasil;
+  return result;
 }
 
-export async function denganTransaksi(fn) {
-  const klien = await pool.connect();
+export async function withTransaction(fn) {
+  const client = await pool.connect();
   try {
-    await klien.query('BEGIN');
-    const hasil = await fn(klien);
-    await klien.query('COMMIT');
-    return hasil;
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
   } catch (err) {
-    await klien.query('ROLLBACK');
+    await client.query('ROLLBACK');
     throw err;
   } finally {
-    klien.release();
+    client.release();
   }
 }

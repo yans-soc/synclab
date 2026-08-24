@@ -1,37 +1,37 @@
 import { Router } from 'express';
-import routerOtentikasi from '../modules/otentikasi/routes.js';
-import { routerPublik as artikelPublik, routerAdmin as artikelAdmin } from '../modules/artikel/routes.js';
-import { routerPublik as kategoriPublik, routerAdmin as kategoriAdmin } from '../modules/kategori/routes.js';
-import { routerPublik as berandaPublik, routerAdmin as berandaAdmin } from '../modules/beranda/routes.js';
-import { routerPublik as menuPublik, routerAdmin as menuAdmin } from '../modules/menu/routes.js';
-import { routerPublik as pengaturanPublik, routerAdmin as pengaturanAdmin } from '../modules/pengaturan/routes.js';
-import { routerPublik as halamanPublik, routerAdmin as halamanAdmin } from '../modules/halaman/routes.js';
+import authRouter from '../modules/auth/routes.js';
+import { routerPublic as articlesPublic, routerAdmin as articlesAdmin } from '../modules/articles/routes.js';
+import { routerPublic as categoriesPublic, routerAdmin as categoriesAdmin } from '../modules/categories/routes.js';
+import { routerPublic as homepagePublic, routerAdmin as homepageAdmin } from '../modules/homepage/routes.js';
+import { routerPublic as menuPublic, routerAdmin as menuAdmin } from '../modules/menus/routes.js';
+import { routerPublic as settingsPublic, routerAdmin as settingsAdmin } from '../modules/settings/routes.js';
+import { routerPublic as pagesPublic, routerAdmin as pagesAdmin } from '../modules/pages/routes.js';
 import mediaAdmin from '../modules/media/routes.js';
-import kunjunganRoutes from '../modules/kunjungan/routes.js';
-import { cachePublik, invalidasiCache, adminTanpaCache } from '../middleware/cache.js';
+import visitRoutes from '../modules/visits/routes.js';
+import { publicCache, invalidateCache, adminNoCache } from '../middleware/cache.js';
 
 const router = Router();
 
-// Public API (di-cache in-memory, invalidasi otomatis saat mutasi admin)
-router.use('/beranda', cachePublik, berandaPublik);
-router.use('/artikel', cachePublik, artikelPublik);
-router.use('/kategori', cachePublik, kategoriPublik);
-router.use('/menu', cachePublik, menuPublik);
-router.use('/pengaturan', cachePublik, pengaturanPublik);
-router.use('/halaman', cachePublik, halamanPublik);
+// Public API (cached in-memory, invalidated automatically on admin mutations)
+router.use('/homepage', publicCache, homepagePublic);
+router.use('/articles', publicCache, articlesPublic);
+router.use('/categories', publicCache, categoriesPublic);
+router.use('/menus', publicCache, menuPublic);
+router.use('/settings', publicCache, settingsPublic);
+router.use('/pages', publicCache, pagesPublic);
 
-// Klaim view tervalidasi (tidak di-cache; ini mutasi terukur)
-router.use('/kunjungan', kunjunganRoutes);
+// Validated view claims (never cached; these are measured mutations)
+router.use('/visits', visitRoutes);
 
-// Admin API (setiap mutasi membersihkan cache publik; tidak boleh di-cache publik)
-router.use('/otentikasi', adminTanpaCache, routerOtentikasi);
-router.use('/admin', adminTanpaCache, invalidasiCache);
-router.use('/admin/artikel', artikelAdmin);
-router.use('/admin/kategori', kategoriAdmin);
-router.use('/admin/beranda', berandaAdmin);
-router.use('/admin/menu', menuAdmin);
-router.use('/admin/pengaturan', pengaturanAdmin);
-router.use('/admin/halaman', halamanAdmin);
+// Admin API (every mutation clears the public cache; never publicly cacheable)
+router.use('/auth', adminNoCache, authRouter);
+router.use('/admin', adminNoCache, invalidateCache);
+router.use('/admin/articles', articlesAdmin);
+router.use('/admin/categories', categoriesAdmin);
+router.use('/admin/homepage', homepageAdmin);
+router.use('/admin/menus', menuAdmin);
+router.use('/admin/settings', settingsAdmin);
+router.use('/admin/pages', pagesAdmin);
 router.use('/admin/media', mediaAdmin);
 
 export default router;

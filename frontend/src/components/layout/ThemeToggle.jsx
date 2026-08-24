@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
-  const [gelap, setGelap] = useState(
-    () => localStorage.getItem('synclab_tema') === 'gelap'
+  const [dark, setDark] = useState(
+    () => localStorage.getItem('synclab_theme') === 'dark'
   );
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', gelap);
-    localStorage.setItem('synclab_tema', gelap ? 'gelap' : 'terang');
-  }, [gelap]);
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('synclab_theme', dark ? 'dark' : 'light');
+  }, [dark]);
 
   return (
     <button
       type="button"
-      onClick={() => setGelap((v) => !v)}
+      onClick={() => setDark((v) => !v)}
       className="rounded-full p-2 text-slate-500 transition hover:bg-surface-container dark:text-slate-300 dark:hover:bg-slate-800"
-      aria-label="Ganti tema"
+              aria-label="Toggle theme"
     >
       <span className="material-symbols-outlined">
-        {gelap ? 'light_mode' : 'dark_mode'}
+        {dark ? 'light_mode' : 'dark_mode'}
       </span>
     </button>
   );

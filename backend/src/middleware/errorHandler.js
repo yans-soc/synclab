@@ -1,28 +1,28 @@
 import { ZodError } from 'zod';
-import { gagal } from '../utils/response.js';
+import { fail } from '../utils/response.js';
 
-export function penangananError(err, req, res, _next) {
+export function errorHandler(err, req, res, _next) {
   if (err instanceof ZodError) {
-    return gagal(
+    return fail(
       res,
-      'Payload tidak valid',
+      'Invalid payload',
       400,
-      err.issues.map((i) => ({ jalur: i.path.join('.'), pesan: i.message }))
+      err.issues.map((i) => ({ path: i.path.join('.'), message: i.message }))
     );
   }
   if (err?.type === 'entity.too.large') {
-    return gagal(res, 'Ukuran payload terlalu besar', 413);
+    return fail(res, 'Payload too large', 413);
   }
   if (err?.name === 'MulterError') {
-    return gagal(res, `Gagal mengunggah berkas: ${err.message}`, 400);
+    return fail(res, `Failed to upload file: ${err.message}`, 400);
   }
   if (Number.isInteger(err?.status)) {
-    return gagal(res, err.message, err.status);
+    return fail(res, err.message, err.status);
   }
   console.error('[error]', err);
-  return gagal(res, 'Terjadi kesalahan pada server', 500);
+  return fail(res, 'Internal server error', 500);
 }
 
-export function tidakDitemukan(req, res) {
-  return gagal(res, `Endpoint ${req.method} ${req.originalUrl} tidak ditemukan`, 404);
+export function notFound(req, res) {
+  return fail(res, `Endpoint ${req.method} ${req.originalUrl} not found`, 404);
 }

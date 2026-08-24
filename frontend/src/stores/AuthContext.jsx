@@ -1,29 +1,29 @@
 import { createContext, useContext, useState } from 'react';
-import { api, simpanSesi, hapusSesi, ambilPengguna, ambilToken } from '../services/api.js';
+import { api, saveSession, clearSession, getUser, getToken } from '../services/api.js';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [pengguna, setPengguna] = useState(() => (ambilToken() ? ambilPengguna() : null));
+  const [user, setUser] = useState(() => (getToken() ? getUser() : null));
 
-  async function masuk(surel, kata_sandi) {
-    const r = await api.post('/otentikasi/masuk', { surel, kata_sandi });
-    simpanSesi(r.data.token, r.data.pengguna);
-    setPengguna(r.data.pengguna);
+  async function signIn(email, password) {
+    const r = await api.post('/auth/login', { email, password });
+    saveSession(r.data.token, r.data.user);
+    setUser(r.data.user);
   }
 
-  async function keluar() {
+  async function signOut() {
     try {
-      await api.post('/otentikasi/keluar');
+      await api.post('/auth/logout');
     } catch {
-      // abaikan; sesi lokal tetap dihapus
+      // ignore; the local session is still cleared
     }
-    hapusSesi();
-    setPengguna(null);
+    clearSession();
+    setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ pengguna, masuk, keluar }}>
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

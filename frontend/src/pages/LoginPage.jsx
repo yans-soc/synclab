@@ -3,31 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../stores/AuthContext.jsx';
 
 export default function LoginPage() {
-  const { masuk } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
-  const [surel, setSurel] = useState('');
-  const [kataSandi, setKataSandi] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [memuat, setMemuat] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  async function kirim(e) {
+  async function submit(e) {
     e.preventDefault();
     setError('');
-    setMemuat(true);
+    setLoading(true);
     try {
-      await masuk(surel, kataSandi);
+      await signIn(email, password);
       navigate('/admin');
     } catch (err) {
       setError(err.message);
     } finally {
-      setMemuat(false);
+      setLoading(false);
     }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-container px-4 dark:bg-slate-900">
       <form
-        onSubmit={kirim}
+        onSubmit={submit}
         className="w-full max-w-sm rounded-2xl border border-surface-container-high bg-surface-container-lowest p-8 shadow-lg dark:border-slate-800 dark:bg-slate-950"
       >
         <div className="mb-8 flex items-center justify-center gap-2">
@@ -37,24 +37,24 @@ export default function LoginPage() {
           </span>
         </div>
         <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
-          Surel
+          Email
         </label>
         <input
           type="email"
           required
-          value={surel}
-          onChange={(e) => setSurel(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="mb-4 w-full rounded-lg border border-surface-container-high bg-transparent px-3 py-2.5 text-sm outline-none focus:border-primary dark:border-slate-700"
           placeholder="admin@synclab.id"
         />
         <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
-          Kata Sandi
+          Password
         </label>
         <input
           type="password"
           required
-          value={kataSandi}
-          onChange={(e) => setKataSandi(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="mb-6 w-full rounded-lg border border-surface-container-high bg-transparent px-3 py-2.5 text-sm outline-none focus:border-primary dark:border-slate-700"
           placeholder="••••••••"
         />
@@ -65,10 +65,10 @@ export default function LoginPage() {
         )}
         <button
           type="submit"
-          disabled={memuat}
+          disabled={loading}
           className="w-full rounded-lg bg-primary py-2.5 font-semibold text-white transition hover:bg-primary-700 disabled:opacity-50"
         >
-          {memuat ? 'Memproses...' : 'Masuk'}
+          {loading ? 'Processing...' : 'Sign In'}
         </button>
       </form>
     </div>
