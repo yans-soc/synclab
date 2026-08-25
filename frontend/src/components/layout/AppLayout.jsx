@@ -1,6 +1,7 @@
 import TopNavBar from './TopNavBar.jsx';
 import Footer from './Footer.jsx';
 import BackToTopButton from './BackToTopButton.jsx';
+import CookieConsent from './CookieConsent.jsx';
 
 export default function AppLayout({ children }) {
   return (
@@ -9,6 +10,7 @@ export default function AppLayout({ children }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <BackToTopButton />
+      <CookieConsent />
     </div>
   );
 }
