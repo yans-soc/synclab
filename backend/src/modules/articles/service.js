@@ -111,10 +111,11 @@ export async function getPublicBySlug(slug, { userAgent = '' } = {}) {
      FROM seo_metadata WHERE article_id = $1`,
     [rows[0].id]
   );
-  // Tokens are only issued to human user-agents; bots/crawlers cannot claim
+  // Tokens are only issued to human user-agents; bots/crawlers cannot claim.
+  // Resource-bound to 'post' so a thread token can never be replayed here.
   const token = looksLikeBot(userAgent)
     ? null
-    : createVisitToken(rows[0].id).token;
+    : createVisitToken('post', rows[0].id).token;
   return {
     ...toPublicArticle(rows[0]),
     content: rows[0].content,

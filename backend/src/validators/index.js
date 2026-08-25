@@ -77,6 +77,12 @@ export const settingsSchemaByType = {
     display_count: z.number().int().min(1).max(24).default(6),
     link_text: z.string().optional(),
   }),
+  community_trending: z.object({
+    subtitle: z.string().optional(),
+    section_title: z.string().min(1),
+    display_count: z.number().int().min(1).max(12).default(4),
+    link_text: z.string().optional(),
+  }),
   cta_banner: z.object({
     title: z.string().min(1),
     description: z.string().optional(),
@@ -143,6 +149,59 @@ export const reorderSchema = z.object({
 export const menuSchema = z.object({
   name: z.string().min(1).max(100),
   location: z.string().min(1).max(50),
+});
+
+// ============================================================================
+// COMMUNITY
+// ============================================================================
+
+export const threadSchema = z.object({
+  title: z.string().min(4).max(200),
+  category_id: uuid,
+  content: z.string().min(10).max(20000),
+});
+
+export const threadUpdateSchema = z.object({
+  title: z.string().min(4).max(200).optional(),
+  content: z.string().min(10).max(20000).optional(),
+});
+
+export const replySchema = z.object({
+  content: z.string().min(2).max(10000),
+  parent_reply_id: uuid.nullish(),
+});
+
+export const reportSchema = z
+  .object({
+    reason: z.string().min(4).max(500),
+    thread_id: uuid.nullish(),
+    reply_id: uuid.nullish(),
+  })
+  .refine((v) => v.thread_id || v.reply_id, {
+    message: 'thread_id or reply_id is required',
+  });
+
+export const communityCategorySchema = z.object({
+  name: z.string().min(1).max(120),
+  description: z.string().max(500).optional().or(z.literal('')),
+  icon: z.string().max(60).optional().or(z.literal('')),
+  position: z.number().int().min(0).default(0),
+  enabled: z.boolean().default(true),
+});
+
+export const moderationSchema = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('hide') }),
+  z.object({ action: z.literal('restore') }),
+  z.object({ action: z.literal('approve') }),
+  z.object({ action: z.literal('delete') }),
+  z.object({ action: z.literal('lock') }),
+  z.object({ action: z.literal('unlock') }),
+  z.object({ action: z.literal('pin') }),
+  z.object({ action: z.literal('unpin') }),
+]);
+
+export const reportResolutionSchema = z.object({
+  action: z.enum(['resolve', 'dismiss']),
 });
 
 export const menuItemSchema = z.object({

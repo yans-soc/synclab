@@ -1,6 +1,7 @@
 import { query, withTransaction } from '../../database/pool.js';
 import { listPublic, listTrending } from '../articles/service.js';
 import { list as listCategory } from '../categories/service.js';
+import { listTrendingThreads } from '../threads/service.js';
 
 export async function getActiveHomepage({ full = false } = {}) {
   const { rows } = await query(
@@ -30,14 +31,18 @@ export async function getActiveHomepage({ full = false } = {}) {
   const needed = new Set(homepage.sections.map((b) => b.type));
   const latestCount = findSection('latest_articles')?.settings?.display_count || 6;
   const trendingCount = findSection('trending_articles')?.settings?.display_count || 6;
-  const [categories, latest, trending] = await Promise.all([
+  const communityCount = findSection('community_trending')?.settings?.display_count || 4;
+  const [categories, latest, trending, community] = await Promise.all([
     needed.has('explore_topics') ? listCategory() : Promise.resolve(null),
     needed.has('latest_articles')
       ? listPublic({ limit: latestCount }).then((r) => r.data)
       : Promise.resolve(null),
     needed.has('trending_articles') ? listTrending(trendingCount) : Promise.resolve(null),
+    needed.has('community_trending')
+      ? listTrendingThreads({ limit: communityCount })
+      : Promise.resolve(null),
   ]);
-  homepage.data = { categories, latest_articles: latest, trending };
+  homepage.data = { categories, latest_articles: latest, trending, community };
   return homepage;
 }
 

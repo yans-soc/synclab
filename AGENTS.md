@@ -20,6 +20,12 @@
 - Full stack: start Postgres (`docker run -p 55432:5432 postgres:16-alpine`), apply migrations + seed, run backend with `DATABASE_URL=... node src/index.js`, curl `/api/health` + `/api/v1/*` endpoints.
 
 ## Deployment
-- Push to `main` triggers the webhook on the VPS (`root@43.156.102.177`): `git pull` in `/synclab`, frontend build, `pm2 restart synclab-api`.
+- Push to `main` triggers the webhook on the VPS (`root@43.156.102.177`):   `git pull` in `/synclab`, frontend build, `pm2 restart synclab-api` (deploys are verified via the live site API; DB migrations are applied manually over SSH).
 - DB migrations are NOT auto-applied — run new `database/migrations/*.sql` manually: `docker exec -i synclab-postgres psql -U synclab -d synclab < file.sql`.
 - Seeded admin: `admin@synclab.id` / `SandiAman123!` (see README).
+
+## Community Module (added)
+- Backend: `modules/threads/` (categories, threads, replies, reactions, bookmarks, reports, moderation). Qualified views run through the central `modules/visits/` service with resource-type-bound tokens.
+- DB: `view_records` (post + thread), `community_categories`, `threads`, `thread_replies`, `thread_reactions`, `thread_bookmarks`, `thread_reports` in migration 006. IPs hashed at the DB layer via `hash_ip()` + trigger.
+- Frontend: `/community`, `/community/category/:slug`, `/community/thread/:slug`, `/community/new`; CMS moderation under `/admin/threads`. Homepage includes the `community_trending` section type.
+- Rate limits (env-configurable): `COMMUNITY_THREAD_LIMIT` (5/h), `COMMUNITY_REPLY_LIMIT` (30/10min), `COMMUNITY_REACTION_LIMIT` (60/10min), `COMMUNITY_REPORT_LIMIT` (10/h). View tuning: `VIEW_TOKEN_TTL_SECONDS`, `VIEW_CLAIM_WINDOW_SECONDS`, `VIEW_COOLDOWN_HOURS`, `VIEW_MIN_ACTIVE_SECONDS`.

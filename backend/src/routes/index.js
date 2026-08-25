@@ -8,6 +8,10 @@ import { routerPublic as settingsPublic, routerAdmin as settingsAdmin } from '..
 import { routerPublic as pagesPublic, routerAdmin as pagesAdmin } from '../modules/pages/routes.js';
 import mediaAdmin from '../modules/media/routes.js';
 import visitRoutes from '../modules/visits/routes.js';
+import {
+  routerPublic as threadsPublic,
+  routerAdmin as threadsAdmin,
+} from '../modules/threads/routes.js';
 import { publicCache, invalidateCache, adminNoCache } from '../middleware/cache.js';
 
 const router = Router();
@@ -19,6 +23,7 @@ router.use('/categories', publicCache, categoriesPublic);
 router.use('/menus', publicCache, menuPublic);
 router.use('/settings', publicCache, settingsPublic);
 router.use('/pages', publicCache, pagesPublic);
+router.use('/threads', publicCache, invalidateCache, threadsPublic);
 
 // Validated view claims (never cached; these are measured mutations)
 router.use('/visits', visitRoutes);
@@ -33,5 +38,6 @@ router.use('/admin/menus', menuAdmin);
 router.use('/admin/settings', settingsAdmin);
 router.use('/admin/pages', pagesAdmin);
 router.use('/admin/media', mediaAdmin);
+router.use('/admin/threads', threadsAdmin);
 
 export default router;

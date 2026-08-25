@@ -6,9 +6,12 @@ import { getCache, setCache, invalidatePublicContent } from '../utils/cache.js';
 // Strategy per category:
 // - Public lists/static : public, max-age=60, s-maxage=300, stale-while-revalidate=600
 // - Popular              : public but short-lived (ordering stays near-realtime)
-// - Article detail       : no-store — respons membawa token visit per-visitor
+// - Article/thread detail : no-store — responses carry per-visitor view tokens
 // - Admin/auth           : private, no-store (set in the adminNoCache middleware)
-const NO_CACHE = /^\/api\/v1\/articles\/(?!trending(?:[/?]|$))[^/?]+/;
+// Detail pages carry per-visitor view tokens and per-user flags: never cached.
+// Threads listing, trending and categories are cacheable like other lists.
+const NO_CACHE =
+  /^\/api\/v1\/(articles\/(?!trending(?:[/?]|$))[^/?]+|threads\/(?!trending(?:[/?]|$)|categories(?:[/?]|$))[^/?]+)/;
 const HEADER_PUBLIC = 'public, max-age=60, s-maxage=300, stale-while-revalidate=600';
 const HEADER_POPULAR = 'public, max-age=15, s-maxage=30, stale-while-revalidate=60';
 const HEADER_TRENDING = 'public, max-age=30, s-maxage=60, stale-while-revalidate=120';

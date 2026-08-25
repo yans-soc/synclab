@@ -7,6 +7,7 @@ const TYPE_LABELS = {
   trending_articles: 'Trending Articles',
   latest_articles: 'Latest Articles',
   cta_banner: 'CTA Banner',
+  community_trending: 'Trending Discussions',
 };
 
 const EXAMPLE_SETTINGS = {
@@ -18,6 +19,7 @@ const EXAMPLE_SETTINGS = {
   explore_topics: { subtitle: 'Topics', section_title: 'Explore Topics' },
   trending_articles: { subtitle: 'Most Read', section_title: 'Trending Articles', display_count: 6, link_text: 'View All' },
   latest_articles: { section_title: 'Latest Articles', display_count: 6, link_text: 'View All' },
+  community_trending: { subtitle: 'Community', section_title: 'Trending Discussions', display_count: 4, link_text: 'Visit Community' },
   cta_banner: {
     title: 'Banner Title',
     description: 'Banner description.',

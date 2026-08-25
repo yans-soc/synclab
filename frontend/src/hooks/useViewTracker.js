@@ -3,12 +3,13 @@ import { api } from '../services/api.js';
 
 const MIN_DURATION_SECONDS = 10;
 
-// Validated view tracker: counts active seconds (page visible) then
-// claims the view to the centralized validation service. The page counter updates
-// with the authoritative value returned by the server. Runs once per page
-// load; the token is reused if the article reloads.
-export function useViewTracker(article) {
-  const [viewCount, setViewCount] = useState(article?.view_count ?? 0);
+// Validated view tracker: counts active seconds (page visible) then claims
+// the view to the centralized validation service. Shared by article and
+// thread detail pages — the resourceType binds to the server session.
+// The page counter updates with the authoritative value returned by the
+// server. Runs once per page load; the token is reused if the detail reloads.
+export function useViewTracker(article, resourceType = 'post') {
+  const [viewCount, setViewCount] = useState(Number(article?.view_count ?? 0));
   const claimed = useRef(false);
   const tokenRef = useRef(article?.visit_token || null);
 
@@ -22,13 +23,17 @@ export function useViewTracker(article) {
     if (!article?.slug) return undefined;
     let activeSeconds = 0;
     let timer;
+    const path =
+      resourceType === 'thread'
+        ? `/visits/thread/${article.slug}`
+        : `/visits/${article.slug}`;
 
     const claim = () => {
       if (claimed.current || !tokenRef.current) return;
       claimed.current = true;
       clearInterval(timer);
       api
-        .post(`/visits/${article.slug}`, {
+        .post(path, {
           token: tokenRef.current,
           duration_seconds: activeSeconds,
         })

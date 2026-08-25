@@ -5,6 +5,7 @@ import CategoryExplorer from './CategoryExplorer.jsx';
 import LatestArticlesGrid from './LatestArticlesGrid.jsx';
 import TrendingArticlesGrid from './TrendingArticlesGrid.jsx';
 import CallToActionBanner from './CallToActionBanner.jsx';
+import CommunityTrending from '../community/CommunityTrending.jsx';
 
 const COMPONENT_MAP = {
   hero_section: HeroSection,
@@ -12,6 +13,7 @@ const COMPONENT_MAP = {
   trending_articles: TrendingArticlesGrid,
   latest_articles: LatestArticlesGrid,
   cta_banner: CallToActionBanner,
+  community_trending: CommunityTrending,
 };
 
 export default function LandingPageBuilder() {
@@ -57,7 +59,9 @@ export default function LandingPageBuilder() {
               ? homepage.data?.latest_articles
               : section.type === 'trending_articles'
                 ? homepage.data?.trending
-                : null;
+                : section.type === 'community_trending'
+                  ? homepage.data?.community
+                  : null;
         return <Component key={section.id} settings={section.settings} initialData={initialData} />;
       })}
     </>

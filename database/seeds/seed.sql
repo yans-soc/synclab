@@ -221,3 +221,34 @@ FROM (
   GROUP BY article_id
 ) sub
 WHERE a.id = sub.article_id;
+
+-- 11. SEED COMMUNITY
+INSERT INTO community_categories (id, name, slug, description, icon, position, enabled)
+VALUES
+('31eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', 'web-dev', 'Frontend, backend, and API engineering discussions', 'code', 1, TRUE),
+('32eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Linux', 'linux', 'Kernel, shell, and system administration discussions', 'terminal', 2, TRUE),
+('33eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', 'Network', 'network', 'Mesh networks, routing, and protocol engineering', 'hub', 3, TRUE),
+('34eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', 'AI & Data', 'ai-data', 'Machine learning and data engineering discussions', 'psychology', 4, TRUE);
+
+INSERT INTO threads (id, user_id, category_id, title, slug, content, status, is_pinned, view_count, reply_count, reaction_count, bookmark_count, last_reply_at)
+VALUES
+('91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '31eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
+ 'How do you structure large Express apps?', 'how-do-you-structure-large-express-apps',
+ 'I am trying to keep our Express codebase maintainable as it grows. Controller-service per module, or a different pattern? What has worked for you in production?',
+ 'published', TRUE, 0, 2, 0, 0, now()),
+('92eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '32eebc99-9c0b-4ef8-bb6d-6bb9bd380a02',
+ 'Kernel memory management: what confused you most?', 'kernel-memory-management-confusion',
+ 'Starting with the article on Linux kernel memory management. The zone model and page reclaim logic tripped me up. What parts were hardest for you?',
+ 'published', FALSE, 0, 1, 0, 0, now());
+
+INSERT INTO thread_replies (id, thread_id, user_id, parent_reply_id, content, status)
+VALUES
+('93eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', NULL,
+ 'Controller-service per module works well for us. We keep routes thin and push logic down into services so it is testable without HTTP.', 'published'),
+('94eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '91eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '93eebc99-9c0b-4ef8-bb6d-6bb9bd380a01',
+ 'Agreed. Add zod validation at the boundary and it scales nicely.', 'published'),
+('95eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '92eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', NULL,
+ 'Once you see page frames as a resource ledger it clicks. Try diagramming the buddy allocator.', 'published');
+
+UPDATE community_categories SET thread_count = 1 WHERE id IN ('31eebc99-9c0b-4ef8-bb6d-6bb9bd380a01','32eebc99-9c0b-4ef8-bb6d-6bb9bd380a02');
+

@@ -9,6 +9,7 @@ const NAV = [
   { to: '/admin/media', icon: 'perm_media', label: 'Media' },
   { to: '/admin/homepage', icon: 'home_app_logo', label: 'Homepage' },
   { to: '/admin/menus', icon: 'menu', label: 'Menus' },
+  { to: '/admin/threads', icon: 'forum', label: 'Community' },
   { to: '/admin/settings', icon: 'settings', label: 'Settings' },
 ];
 
