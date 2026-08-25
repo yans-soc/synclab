@@ -202,6 +202,7 @@ VALUES
 ('81eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Web Dev', '/category/web-dev', 1),
 ('82eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Linux', '/category/linux', 2),
 ('83eebc99-9c0b-4ef8-bb6d-6bb9bd380a03', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Network', '/category/network', 3),
+('86eebc99-9c0b-4ef8-bb6d-6bb9bd380a06', '71eebc99-9c0b-4ef8-bb6d-6bb9bd380a01', 'Community', '/community', 4),
 ('84eebc99-9c0b-4ef8-bb6d-6bb9bd380a04', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'Documentation', '/page/documentation', 1),
 ('85eebc99-9c0b-4ef8-bb6d-6bb9bd380a05', '72eebc99-9c0b-4ef8-bb6d-6bb9bd380a02', 'API Terms', '/page/api-terms', 2);
 
