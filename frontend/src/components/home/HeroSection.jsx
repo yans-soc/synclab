@@ -13,10 +13,10 @@ export default function HeroSection({ settings }) {
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 md:py-24 lg:py-32">
-        <h1 className="mx-auto max-w-3xl font-headline text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-6xl">
+        <h1 className="fadein-blur mx-auto max-w-3xl font-headline text-3xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-6xl">
           {main_title}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-slate-400 md:mt-6 md:text-lg">
+        <p className="fadein-blur mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-500 dark:text-slate-400 md:mt-6 md:text-lg">
           {description}
         </p>
         {cta && (
