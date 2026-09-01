@@ -40,7 +40,7 @@ function toPublicThread(t) {
 export async function listCategories() {
   const { rows } = await query(
     `SELECT id, name, slug, description, icon, thread_count, position
-     FROM community_categories WHERE enabled = TRUE ORDER BY position, name`
+     FROM community_categories WHERE enabled = TRUE ORDER BY name, position`
   );
   return rows;
 }
@@ -48,7 +48,7 @@ export async function listCategories() {
 export async function listAdminCategories() {
   const { rows } = await query(
     `SELECT id, name, slug, description, icon, thread_count, position, enabled, created_at
-     FROM community_categories ORDER BY position, name`
+     FROM community_categories ORDER BY name, position`
   );
   return rows;
 }
