@@ -23,8 +23,6 @@ export default function TrendingArticlesGrid({ settings, initialData = null }) {
         <SectionHeader
           subtitle={settings.subtitle}
           title={settings.section_title}
-          link="/articles?sort=popular"
-          linkText={settings.link_text}
         />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((a, i) => (

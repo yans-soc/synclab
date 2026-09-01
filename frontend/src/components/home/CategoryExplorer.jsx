@@ -10,11 +10,11 @@ const colorMap = {
   'ai-purple': 'bg-ai-purple/10 text-ai-purple border-ai-purple/20',
 };
 
-export function CategoryCard({ name, slug, description, color, icon }) {
+export function CategoryCard({ name, slug, description, color, icon, to, meta }) {
   const colorClass = colorMap[color] || colorMap.primary;
   return (
     <Link
-      to={`/category/${slug}`}
+      to={to || `/category/${slug}`}
       className={`group rounded-2xl border p-6 transition hover:-translate-y-1 hover:shadow-lg ${colorClass} dark:bg-opacity-5`}
     >
       <span className="material-symbols-outlined text-3xl">{icon || 'folder'}</span>
@@ -22,6 +22,9 @@ export function CategoryCard({ name, slug, description, color, icon }) {
         {name}
       </h3>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+      {meta && (
+        <p className="mt-3 text-xs font-semibold text-slate-400 dark:text-slate-500">{meta}</p>
+      )}
     </Link>
   );
 }
