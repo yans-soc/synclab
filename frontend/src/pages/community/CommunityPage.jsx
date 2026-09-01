@@ -4,7 +4,6 @@ import { api } from '../../services/api.js';
 import AppLayout from '../../components/layout/AppLayout.jsx';
 import ThreadCard from '../../components/community/ThreadCard.jsx';
 import SectionHeader from '../../components/home/SectionHeader.jsx';
-import { CategoryCard } from '../../components/home/CategoryExplorer.jsx';
 
 // Rotated through topic cards so the grid mirrors the homepage's
 // Explore Topics palette (community categories carry no color field).
@@ -77,21 +76,28 @@ export default function CommunityPage() {
       ) : (
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           {categories.length > 0 && (
-            <section className="mb-14">
+            <section className="mb-10">
               <SectionHeader subtitle="Browse by topic" title="Explore Topics" />
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
-                {categories.map((c, i) => (
-                  <CategoryCard
-                    key={c.id}
-                    name={c.name}
-                    slug={c.slug}
-                    description={c.description}
-                    icon={c.icon || 'forum'}
-                    color={TOPIC_COLORS[i % TOPIC_COLORS.length]}
-                    to={`/community/category/${c.slug}`}
-                    meta={`${c.thread_count} thread${c.thread_count === 1 ? '' : 's'}`}
-                  />
-                ))}
+              <div className="flex flex-wrap gap-2">
+                {categories.map((c, i) => {
+                  const color = TOPIC_COLORS[i % TOPIC_COLORS.length];
+                  const colorClass = {
+                    primary: 'bg-primary/10 text-primary border-primary/20',
+                    secondary: 'bg-secondary/10 text-secondary border-secondary/20',
+                    tertiary: 'bg-tertiary/10 text-tertiary border-tertiary/20',
+                    'ai-purple': 'bg-ai-purple/10 text-ai-purple border-ai-purple/20',
+                  }[color];
+                  return (
+                    <Link
+                      key={c.id}
+                      to={`/community/category/${c.slug}`}
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition hover:scale-105 hover:shadow-md ${colorClass}`}
+                    >
+                      <span className="material-symbols-outlined text-base">{c.icon || 'forum'}</span>
+                      {c.name}
+                    </Link>
+                  );
+                })}
               </div>
             </section>
           )}
